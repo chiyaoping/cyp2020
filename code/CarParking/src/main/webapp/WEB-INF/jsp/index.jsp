@@ -268,16 +268,16 @@ th {
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">上传车辆车牌照片</h4>
       </div>
-     	<form action="${pageContext.request.contextPath}/fileUpload1" method="POST" enctype="multipart/form-data"  id="fileUploadForm">
-      	<div class="modal-body" >
-       	<input  id='id' name='id' value='$(id)' type='hidden'>
-		    <input type="file" name="file" class="file" /> 
-      	</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        <button type="submit" class="btn btn-primary"  >上传云端识别</button>
-      </div>
-      </form> 
+		<form action="${pageContext.request.contextPath}/fileUpload1" method="POST" enctype="multipart/form-data"  id="fileUploadForm">
+			<div class="modal-body" >
+			<input  id='id' name='id' value='$(id)' type='hidden'>
+				<input type="file" name="file" class="file" />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="submit" class="btn btn-primary"  >上传云端识别</button>
+			</div>
+     	 </form>
          
     </div>
   </div>
