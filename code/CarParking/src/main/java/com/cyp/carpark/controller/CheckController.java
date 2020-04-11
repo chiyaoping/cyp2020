@@ -208,7 +208,6 @@ public class CheckController {
 	
 	@RequestMapping("/index/check/findParkinfoDetailByParknum")
 	@ResponseBody
-	//����ͣ��λ�Ų���ͣ����ϸ��Ϣ
 	public Msg findParkinfoDetailByParknum(@RequestParam("parkNum") int parknum)
 	{
 		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);

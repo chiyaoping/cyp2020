@@ -63,49 +63,9 @@ public class ImageRPController {
 	}
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload2")
-	public Result upload2(@RequestParam("file") MultipartFile file) {
-
-	//	System.out.println(parkId);
-		if (file.isEmpty() || file==null) {
-			List<String> responses = new ArrayList<String>();
-			responses.add("�ļ�Ϊ��");
-			logger.info("�ļ�Ϊ��");
-			return new Result(-1, responses, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-		}
-		String fileName = file.getOriginalFilename();
-		@SuppressWarnings("unused")
-		String suffixName = fileName.substring(fileName.lastIndexOf("."));
-		String filePath = "C:\\springUpload\\image\\";
-		// fileName = UUID.randomUUID() + suffixName;
-		File dest = new File(filePath + fileName);
-		if (!dest.getParentFile().exists()) {
-			dest.getParentFile().mkdirs();
-		}
-		try {
-			file.transferTo(dest);
-			PlateRecognise plateRecognise = new PlateRecogniseImpl();
-			String img = filePath + fileName;
-			logger.info(img);
-			List<String> res = plateRecognise.plateRecognise(filePath + fileName);
-			if (res.size() < 1 || res.contains("")) {
-				logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
-				List<String> responses = new ArrayList<String>();
-				responses.add("ʶ����");
-				return new Result(-1, responses, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			}
-			Result result = new Result(201, plateRecognise.plateRecognise(filePath + fileName),
-					new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-			logger.info(result.toString());
-			return result;
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		List<String> responses = new ArrayList<String>();
-		responses.add("�ϴ�ʧ��");
-	//	return parkInfo;
-		return new Result(-1, responses, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+	public String upload2(@RequestParam("file") MultipartFile file,@RequestParam("id")int id,HttpServletResponse response,HttpServletRequest request) {
+		int parkId=id;
+		return "redirect:/index/toindex";
 	}
 
 	
@@ -122,55 +82,62 @@ public class ImageRPController {
 		String filePath = "C:\\springUpload\\image\\";
 		// fileName = UUID.randomUUID() + suffixName;
 		File dest = new File(filePath + fileName);
+		System.out.println("file-path:"+dest);
 		if (!dest.getParentFile().exists()) {
 			dest.getParentFile().mkdirs();
 		}
+		try {
+			file.transferTo(dest);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "redirect:/index/toindex";
 	
-			try {
-				file.transferTo(dest);
-				PlateRecognise plateRecognise = new PlateRecogniseImpl();
-				String img = filePath + fileName;
-				logger.info(img);
-				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
-				if (res.size() < 1 || res.contains("")) {
-					logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
-					
-					//return Msg.fail().add("va_msg", "�������");
-					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
-					return "error";
-					//response.setHeader("refresh", "5;url=/index/toindex");
-					//return "redirect:/index/toindex";
-				}
-				String carNum=res.get(0);
-				Result result = new Result(201, plateRecognise.plateRecognise(filePath + fileName),
-						new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-				logger.info(result.toString());
-				if (depotcardService.findCardnumByCarnum(carNum)!=null) {
-					formData.setCardNum(depotcardService.findCardnumByCarnum(carNum));
-					formData.setCarNum(carNum);
-					formData.setParkNum(parkId);
-					formData.setParkTem(0);
-				}else {
-					formData.setCardNum("");
-					formData.setCarNum(carNum);
-					formData.setParkNum(parkId);
-					formData.setParkTem(1);
-				}
-				
-				parkinfoservice.saveParkinfo(formData);
-				parkspaceService.changeStatus(parkId, 1);
-				//return "index";
-				return "redirect:/index/toindex";
-				//return Msg.success();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				file.transferTo(dest);
+//				PlateRecognise plateRecognise = new PlateRecogniseImpl();
+//				String img = filePath + fileName;
+//				logger.info(img);
+//				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
+//				if (res.size() < 1 || res.contains("")) {
+//					logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
+//
+//					//return Msg.fail().add("va_msg", "�������");
+//					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
+//					return "error";
+//					//response.setHeader("refresh", "5;url=/index/toindex");
+//					//return "redirect:/index/toindex";
+//				}
+//				String carNum=res.get(0);
+//				Result result = new Result(201, plateRecognise.plateRecognise(filePath + fileName),
+//						new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//				logger.info(result.toString());
+//				if (depotcardService.findCardnumByCarnum(carNum)!=null) {
+//					formData.setCardNum(depotcardService.findCardnumByCarnum(carNum));
+//					formData.setCarNum(carNum);
+//					formData.setParkNum(parkId);
+//					formData.setParkTem(0);
+//				}else {
+//					formData.setCardNum("");
+//					formData.setCarNum(carNum);
+//					formData.setParkNum(parkId);
+//					formData.setParkTem(1);
+//				}
+//
+//				parkinfoservice.saveParkinfo(formData);
+//				parkspaceService.changeStatus(parkId, 1);
+//				//return "index";
+//				return "redirect:/index/toindex";
+//				//return Msg.success();
+//			} catch (IllegalStateException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
-			return "redirect:/index/toindex";
+
 	}
 	
 	
