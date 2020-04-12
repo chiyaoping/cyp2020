@@ -3,14 +3,13 @@ package com.cyp.carpark.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cyp.carpark.serviceImpl.PlateRecogniseImpl;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -33,6 +32,8 @@ import com.cyp.carpark.service.ParkinfoallService;
 import com.cyp.carpark.service.ParkspaceService;
 import com.cyp.carpark.service.PlateRecognise;
 import com.cyp.carpark.service.UserService;
+import com.cyp.carpark.utils.Base64ImageUtils;
+import com.cyp.carpark.utils.HttpClientUtils;
 
 @Controller
 public class ImageRPController {
@@ -65,7 +66,69 @@ public class ImageRPController {
 	@RequestMapping(value = "/fileUpload2")
 	public String upload2(@RequestParam("file") MultipartFile file,@RequestParam("id")int id,HttpServletResponse response,HttpServletRequest request) {
 		int parkId=id;
+		ParkInfo parkInfo=new ParkInfo();
+		FormData formData=new FormData();
+		System.out.println(parkId);
+
+		String fileName = file.getOriginalFilename();
+		@SuppressWarnings("unused")
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		String filePath = "C:\\springUpload\\image\\";
+		// fileName = UUID.randomUUID() + suffixName;
+		File dest = new File(filePath + fileName);
+		System.out.println("file-path:"+dest);
+		if (!dest.getParentFile().exists()) {
+			dest.getParentFile().mkdirs();
+		}
+		try {
+			file.transferTo(dest);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return "redirect:/index/toindex";
+		//			try {
+//				file.transferTo(dest);
+//				PlateRecognise plateRecognise = new PlateRecogniseImpl();
+//				String img = filePath + fileName;
+//				logger.info(img);
+//				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
+//				if (res.size() < 1 || res.contains("")) {
+//					logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
+//
+//					//return Msg.fail().add("va_msg", "�������");
+//					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
+//					return "error";
+//					//response.setHeader("refresh", "5;url=/index/toindex");
+//					//return "redirect:/index/toindex";
+//				}
+//				String carNum=res.get(0);
+//				Result result = new Result(201, plateRecognise.plateRecognise(filePath + fileName),
+//						new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//				logger.info(result.toString());
+//				if (depotcardService.findCardnumByCarnum(carNum)!=null) {
+//					formData.setCardNum(depotcardService.findCardnumByCarnum(carNum));
+//					formData.setCarNum(carNum);
+//					formData.setParkNum(parkId);
+//					formData.setParkTem(0);
+//				}else {
+//					formData.setCardNum("");
+//					formData.setCarNum(carNum);
+//					formData.setParkNum(parkId);
+//					formData.setParkTem(1);
+//				}
+//
+//				parkinfoservice.saveParkinfo(formData);
+//				parkspaceService.changeStatus(parkId, 1);
+//				//return "index";
+//				return "redirect:/index/toindex";
+//				//return Msg.success();
+//			} catch (IllegalStateException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 	}
 
 	
@@ -82,13 +145,33 @@ public class ImageRPController {
 		String filePath = "C:\\springUpload\\image\\";
 		// fileName = UUID.randomUUID() + suffixName;
 		File dest = new File(filePath + fileName);
-		System.out.println("file-path:"+dest);
+		System.out.println("file-path:"+dest.toString());
 		if (!dest.getParentFile().exists()) {
 			dest.getParentFile().mkdirs();
 		}
 		try {
 			file.transferTo(dest);
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		String token = "24.f19ab98570de186108e4de6c287eb991.2592000.1588844709.282335-19309228";
+
+		String Filepath = dest.toString();
+		String image = Base64ImageUtils.GetImageStrFromPath(Filepath);
+		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate?access_token="+token;
+
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+
+		Map<String, String> bodys = new HashMap<String, String>();
+		bodys.put("image", image);
+//        bodys.put("face_fields", "age,beauty,expression,gender,glasses,race,qualities");
+
+		try {
+			CloseableHttpResponse response2 =  HttpClientUtils.doHttpsPost(url,headers,bodys);
+			System.out.println(HttpClientUtils.toString(response2));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "redirect:/index/toindex";
