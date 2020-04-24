@@ -6,8 +6,17 @@ import java.io.Serializable;
 public class DepotInfo implements Serializable{
 	private Integer hourmoney;
 	private Integer monthcard;
+	private Integer daymaxmoney;
 	private Integer yearcard;
 	private Integer illegal;
+
+	public Integer getDaymaxmoney() {
+		return daymaxmoney;
+	}
+
+	public void setDaymaxmoney(Integer daymaxmoney) {
+		this.daymaxmoney = daymaxmoney;
+	}
 	public Integer getHourmoney() {
 		return hourmoney;
 	}

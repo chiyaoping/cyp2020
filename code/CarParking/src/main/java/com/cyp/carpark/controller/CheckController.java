@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,13 +61,21 @@ public class CheckController {
 	private CouponService couponService;
 	
 	static int i=0;
+
+	/**
+	 * 手动入库
+	 * @param model
+	 * @param data
+	 * @return
+	 */
 	@RequestMapping("/index/check/checkIn")
 	@ResponseBody
 	@Transactional
 	public Msg checkIn(Model model, FormData data) {
-		Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
+
 		if(data.getParkTem()!=1)
 		{
+			Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
 		if(depotcard!=null)
 		{
 			if(depotcard.getIslose()==1)
@@ -75,8 +86,13 @@ public class CheckController {
 			return Msg.fail().add("va_msg", "停车卡不存在");
 		}
 		}
+		System.out.println(model);
+
+		//JSONArray modelArray = JSONArray.parseArray(get);
 		parkinfoservice.saveParkinfo(data);
-		parkspaceService.changeStatus(data.getId(), 1);
+//		System.out.println(data);
+//		System.out.println("carnum:"+data.getCarNum());
+		parkspaceService.changeStatus(data.getId(), 1,data.getCarNum());
 		return Msg.success();
 	}
 
@@ -192,10 +208,14 @@ public class CheckController {
 		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);
 		return Msg.success().add("parkInfo", parkInfo);
 	}
-	
+
+	/**
+	 * 通过停车卡查找停车信息
+	 * @param cardnum
+	 * @return
+	 */
 	@RequestMapping("/index/check/findParkinfoByCardnum")
 	@ResponseBody
-	// ����ͣ��λ��/���ƺŲ���ͣ��λ��Ϣ
 	public Msg findParkinfoByCardnum(@RequestParam("cardnum") String cardnum) {
 		ParkInfo parkInfo = parkinfoservice.findParkinfoByCardnum(cardnum);
 		//System.out.println("ello"+parkInfo.getId());
@@ -241,15 +261,21 @@ public class CheckController {
 	@ResponseBody
 	public Msg illegalSubmit(FormData data,HttpSession httpSession)
 	{
+		if(data.getCardNum() == null){
+			System.out.println("cardnum-null");
+		}else{
+
+
 		User currentUser=(User) httpSession.getAttribute("user");
-		//System.out.println(data.getCardNum());
+		System.out.println(data);
+//		通过停车卡查找停车信息
 		ParkInfo parkInfo=parkinfoservice.findParkinfoByCardnum(data.getCardNum());
 		//System.out.println(parkInfo.getParkin()+"hell");
 		IllegalInfo info=new IllegalInfo();
 		IllegalInfo illegalInfo=illegalInfoService.findByCardnumParkin(data.getCardNum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
 		{
-			return Msg.fail().add("va_msg", "提交失败");
+			return Msg.fail().add("va_msg", "已经添加过违规");
 		}
 		info.setCardnum(data.getCardNum());
 		info.setCarnum(data.getCarNum());
@@ -282,20 +308,22 @@ public class CheckController {
 		info.setParkin(parkInfo.getParkin());
 		
 		info.setDelete("N");
-		
+
 		try {
 			
 		illegalInfoService.save(info);
 		
-		} catch (Exception e) {
+			}
+		catch (Exception e) {
 			e.printStackTrace();
 			return Msg.fail().add("va_msg", "添加违规失败");
+		}
 		}
 		return Msg.success().add("va_msg", "添加违规成功");
 	}
 
 	/**
-	 * 判断停车位是否支付成功
+	 * 计算停车费，判断停车位是否支付成功
 	 * @param parknum
 	 * @return
 	 */
@@ -322,7 +350,9 @@ public class CheckController {
 		{
 			parkin=parkInfo.getParkin();
 			day=date.getTime()-parkin.getTime();
+			System.out.println("day："+day);
 			time=day/(1000*60*60);
+			System.out.println("time："+time);
 			if(day%(1000*60*60)>0){
 			time+=1;
 			}
@@ -376,7 +406,9 @@ public class CheckController {
 			}
 			parkin=parkInfo.getParkin();
 			day=date.getTime()-parkin.getTime();
+			System.out.println("day："+day);
 			time=day/(1000*60*60);
+			System.out.println("time："+time);
 			if(day%(1000*60*60)>0){
 			time+=1;
 			}

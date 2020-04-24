@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cyp.carpark.serviceImpl.PlateRecogniseImpl;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -39,7 +40,7 @@ import com.cyp.carpark.utils.HttpClientUtils;
 public class ImageRPController {
 	
 	private static final Logger logger = Logger.getLogger(ImageRPController.class);
-	
+
 	@Autowired
 	private ParkinfoService parkinfoservice;
 	@Autowired
@@ -93,7 +94,7 @@ public class ImageRPController {
 //				logger.info(img);
 //				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
 //				if (res.size() < 1 || res.contains("")) {
-//					logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
+//					logger.info("----");
 //
 //					//return Msg.fail().add("va_msg", "�������");
 //					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
@@ -170,7 +171,24 @@ public class ImageRPController {
 
 		try {
 			CloseableHttpResponse response2 =  HttpClientUtils.doHttpsPost(url,headers,bodys);
+			String Sreq = HttpClientUtils.toString(response2);
 			System.out.println(HttpClientUtils.toString(response2));
+			System.out.println("jsonObject:".substring(0,5));
+			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(10,17);
+			parkspaceService.changeStatus(parkId, 1,realCarnum);
+			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
+					formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
+					formData.setCarNum(realCarnum);
+					formData.setParkNum(parkId);
+					formData.setParkTem(0);
+				}else {
+					formData.setCardNum("");
+					formData.setCarNum(realCarnum);
+					formData.setParkNum(parkId);
+					formData.setParkTem(1);
+				}
+			parkinfoservice.saveParkinfo(formData);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -183,7 +201,7 @@ public class ImageRPController {
 //				logger.info(img);
 //				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
 //				if (res.size() < 1 || res.contains("")) {
-//					logger.info("ʶ��ʧ�ܣ����绻��ͼƬ���ԣ�");
+//					logger.info("出错了");
 //
 //					//return Msg.fail().add("va_msg", "�������");
 //					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
@@ -263,7 +281,7 @@ public class ImageRPController {
 			}
 			
 			parkinfoservice.saveParkinfo(formData);
-			parkspaceService.changeStatus(parkId, 1);
+			parkspaceService.changeStatus(parkId, 1,"null");
 			//return "index";
 			return "redirect:/index/toindex";
 			//return Msg.success();

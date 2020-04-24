@@ -8,6 +8,17 @@ public class ParkSpace implements Serializable{
 	private int parkid;
 	private int status;
 	private int tag;
+	private String carnum;
+
+	public String getCarnum() {
+		return carnum;
+	}
+
+	public void setCarnum(String carnum) {
+		this.carnum = carnum;
+	}
+
+
 	public int getTag() {
 		return tag;
 	}

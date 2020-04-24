@@ -47,17 +47,22 @@ function exportIncomeSubmit()
 }
 function setCharge()
 {
-	var html = "<label>时收费</label><div style=\"width: 30%;\">"
+	var html = "<label>每小时收费</label><div style=\"width: 30%;\">"
 		+ "<div class=\"input-group\">"
 		+ "<input id=\"hourmoney\" name=\"hourmoney\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
 		+ "</div>"
 		+ "</div>"
-		+"<label>月收费</label><div style=\"width: 30%;\">"
+		+"<label>每日最高收费</label><div style=\"width: 30%;\">"
+		+ "<div class=\"input-group\">"
+		+ "<input id=\"daymaxmoney\" name=\"daymaxmoney\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
+		+ "</div>"
+		+ "</div>"
+		+"<label>月卡价格</label><div style=\"width: 30%;\">"
 		+ "<div class=\"input-group\">"
 		+ "<input id=\"monthcard\" name=\"monthcard\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
 		+ "</div>"
 		+ "</div>"
-		+ "<label>年收费：</label><div style=\"width: 30%;\">"
+		+ "<label>年卡价格：</label><div style=\"width: 30%;\">"
 		+ "<div class=\"input-group\">"
 		+ "<input id=\"yearcard\" name=\"yearcard\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
 		+ "</div></div>"
@@ -76,7 +81,7 @@ function setChargeSubmit()
 {
 	$.ajax({
 		type:'post',
-		url:'/depot-system/index/setSystem',
+		url:'./setSystem',
 		datatype:'json',
 		data:$("#checkForm").serializeArray(),
 		success:function(data){

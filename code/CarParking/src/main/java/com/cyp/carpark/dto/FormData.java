@@ -4,29 +4,17 @@ import java.util.Date;
 
 
 public class FormData {
-	//ͣ��λ��ID
 	private int id;
-	//ͣ��λ��
 	private int parkNum;
-	//����
 	private String cardNum;
-	//ͣ������
 	private String carNum;
-	//�Ƿ���ʱͣ��
 	private int parkTem;
-	//ͣ��ʱ��
 	private Date parkin;
-	//����ʱ��
 	private Date parkout;
-	//��λ����
 	private Integer tag;
-	//Υ����Ϣ
 	private String illegalInfo;
-	//֧����ʽ��֧������΢�ţ��ֽ�,�ӿ��п�Ǯ��
 	private int payid;
-	//֧�����
 	private int pay_money;
-	//�꿨�¿��Ƿ���
 	private int pay_type;
 	
 	public int getPayid() {
@@ -106,6 +94,5 @@ public class FormData {
 		return "FormData [id=" + id + ", parkNum=" + parkNum + ", cardNum=" + cardNum + ", carNum=" + carNum
 				+ ", parkTem=" + parkTem + ", parkin=" + parkin + ", parkout=" + parkout + ", tag=" + tag + "]";
 	}
-	
-	
+
 }

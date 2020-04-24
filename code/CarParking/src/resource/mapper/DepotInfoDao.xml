@@ -3,7 +3,7 @@
 <mapper namespace="com.cyp.carpark.dao.DepotInfoDao">
 <cache type="com.cyp.carpark.utils.RedisCache"/>
     <update id="update">
-       update depotinfo set hourmoney=#{hourmoney},monthcard=#{monthcard},yearcard=#{yearcard},illegal=#{illegal}
+       update depotinfo set hourmoney=#{hourmoney},daymaxmoney=#{daymaxmoney},monthcard=#{monthcard},yearcard=#{yearcard},illegal=#{illegal}
        where id=1
     </update>
     <select id="findById" resultType="com.cyp.carpark.entity.DepotInfo">

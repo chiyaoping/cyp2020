@@ -12,7 +12,7 @@
 		select count(*) from parkspace where status=#{status}
 	</select>
 	<select id="findAllParkspace" resultType="com.cyp.carpark.entity.ParkSpace">
-		SELECT * FROM parkspace p order by parkid,status,tag LIMIT #{page},#{size}
+		SELECT * FROM parkspace p order by parkid,status,tag,carnum LIMIT #{page},#{size}
 	</select>
 	<select id="findParkspaceByTag" resultType="com.cyp.carpark.entity.ParkSpace">
 		SELECT * FROM parkspace where 1=1
@@ -27,10 +27,10 @@
 		 order by parkid LIMIT #{page},#{size}
 	</select>
 	<update id="changeStatus">
-		UPDATE parkspace SET status=${status} WHERE id=${id}
+		UPDATE parkspace SET status=${status},carnum=#{carnum} WHERE id=${id}
 	</update>
 	<update id="changeStatusByParkNum">
-		UPDATE parkspace SET status=${status} WHERE parkid = ${parkNum}
+		UPDATE parkspace SET status=${status},carnum='' WHERE parkid = ${parkNum}
 	</update>
 	<select id="findAllParkspaceCount" resultType="int">
 		select count(*) from parkspace where 1=1 

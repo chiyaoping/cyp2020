@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 	
 	public User findUserByUsername(String username) {
-		System.out.println("serviceImpl!");
+//		System.out.println("serviceImpl!");
 		User user=userDao.findUserByUserName(username);
 		return user;
 	}

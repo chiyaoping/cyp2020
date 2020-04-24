@@ -190,6 +190,7 @@ th {
 				</caption>
 				<tr>
 					<th>车位号</th>
+					<th>车牌号</th>
 					<th>状态</th>
 					<th>类型</th>
 					<th>操作</th>
@@ -198,6 +199,7 @@ th {
 				<c:forEach items="${parkspaces.pages }" var="item">
 					<tr>
 						<td>${item.parkid }</td>
+						<td>${item.carnum }</td>
 						<td>${item.status==0?"空":"已停" }</td>
 						<td>${item.tag==1?"正常车位":item.tag==2?"临时车位":"紧急车位" }</td>
 						<td><c:if test="${item.status==0 }">

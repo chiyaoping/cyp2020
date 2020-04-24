@@ -20,7 +20,7 @@
 <select id="findByCardnum" resultType="com.cyp.carpark.entity.IllegalInfo">
 	select * from illegalinfo i where i.cardnum=#{cardnum}
 </select>
-<select id="findByCardnumParkin" resultType="com.cyp.carpark.entity.IllegalInfo">
+<select id="findBinyCardnumPark" resultType="com.cyp.carpark.entity.IllegalInfo">
 	select * from illegalinfo i where i.cardnum=#{cardnum} and i.parkin=#{parkin}
 </select>
 <select id="findAllIllegalInfoCount" resultType="int">

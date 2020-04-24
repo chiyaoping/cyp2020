@@ -8,7 +8,7 @@ public interface ParkspaceService {
 	public void addParkspace(int count);
 	
 	public List<ParkSpace> findAllParkspace(int page,int size);
-	public void changeStatus(int id,int status);
+	public void changeStatus(int id,int status,String carnum);
 	public void changeStatusByParkNum(int parkNum, int status);
 	public List<ParkSpace> findParkspaceByTag(int tag,int page,int size);
 

@@ -30,6 +30,7 @@
 					<th>车牌号</th>
 					<th>违规时间</th>
 					<th>记录人员</th>
+					<th>违规内容</th>
 					<th>操作</th>
 				</tr>
 				<c:forEach items="${illegalInfo.pages }" var="item" varStatus="status">
@@ -39,6 +40,7 @@
 						<td>${item.carnum }</td>
 						<td>${item.formatDate }</td>
 						<td>${item.username }</td>
+						<td>${item.illegalInfo }</td>
 						<td><input class="btn btn-default" type="button" onclick="findIllegalInfo(${item.id })" value="查看"><input class="btn btn-default" type="button" onclick="deleteIllegalInfo(${item.id})" value="删除"></td>
 					</tr>
 				</c:forEach>
@@ -242,6 +244,6 @@
 		var name=$("#name").val();
 				$("#findIllegal").attr("href","${APP_PATH }/index/findAllIllegalinfo?name="+name);
 				$("#findIllegal").click();
-		
+
 	}
 </script>

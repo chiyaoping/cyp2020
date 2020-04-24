@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="depot-system" target="11" />
+      <module name="depot-system" target="11.0" />
     </bytecodeTargetLevel>
   </component>
 </project>

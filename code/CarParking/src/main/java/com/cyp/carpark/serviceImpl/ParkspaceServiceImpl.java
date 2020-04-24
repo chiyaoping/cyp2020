@@ -36,8 +36,8 @@ public class ParkspaceServiceImpl implements ParkspaceService {
 	public List<ParkSpace> findAllParkspace(int page,int size) {
 		return parkspaceDao.findAllParkspace(page,size);
 	}
-	public void changeStatus(int id, int status) {
-		parkspaceDao.changeStatus(id, status);
+	public void changeStatus(int id, int status,String carnum) {
+		parkspaceDao.changeStatus(id, status,carnum);
 	}
 	public List<ParkSpace> findParkspaceByTag(int tag,int page,int size) {
 		return parkspaceDao.findParkspaceByTag(tag,page,size);

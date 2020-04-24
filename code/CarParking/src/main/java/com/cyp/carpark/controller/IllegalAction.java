@@ -33,6 +33,7 @@ public class IllegalAction {
 		{
 			return Msg.fail().add("va_msg", "查询失败");
 		}
+		System.out.println(illegalInfo);
 		int uid=illegalInfo.getUid();
 		User user=userService.findUserById(uid);
 		illegalInfo.setUsername(user.getUsername());

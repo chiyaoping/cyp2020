@@ -632,6 +632,7 @@ public class IndexController {
 	public Msg setSystem(ChargeData chargeData)
 	{
 		Integer hourmoney=chargeData.getHourmoney();
+		Integer daymaxmoney=chargeData.getDaymaxmoney();
 		Integer monthcard=chargeData.getMonthcard();
 		Integer yearcard=chargeData.getYearcard();
 		Integer illegal=chargeData.getIllegal();
@@ -639,6 +640,10 @@ public class IndexController {
 		if(hourmoney==null||hourmoney==0)
 		{
 			chargeData.setHourmoney(depotInfo.getHourmoney());
+		}
+		if(daymaxmoney==null||daymaxmoney==0)
+		{
+			chargeData.setDaymaxmoney(depotInfo.getDaymaxmoney());
 		}
 		if(monthcard==null||monthcard==0)
 		{
