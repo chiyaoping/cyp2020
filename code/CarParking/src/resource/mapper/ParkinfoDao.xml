@@ -8,6 +8,9 @@
 	<select id="findParkinfoByParknum" parameterType="int" resultType="com.cyp.carpark.entity.ParkInfo" >
 		SELECT * FROM parkinfo where parknum=#{parknum}
 	</select>
+	<select id="findParkinfoByCarnum" parameterType="String" resultType="com.cyp.carpark.entity.ParkInfo" >
+		SELECT * FROM parkinfo where carnum=#{carnum}
+	</select>
 	<select id="findParkinfoByCardnum" parameterType="String" resultType="com.cyp.carpark.entity.ParkInfo" >
 		SELECT * FROM parkinfo where cardnum=#{cardnum} 
 	</select>

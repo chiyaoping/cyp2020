@@ -9,5 +9,6 @@ public interface ParkinfoService {
 	public ParkInfo findParkinfoByParknum(int parknum);
 	public void deleteParkinfoByParkNum(int parkNum);
 	public ParkInfo findParkinfoByCardnum(String cardnum);
+	public ParkInfo findParkinfoByCarnum(String carnum);
 	public void updateCardnum(String cardnum, String cardnumNew);
 }

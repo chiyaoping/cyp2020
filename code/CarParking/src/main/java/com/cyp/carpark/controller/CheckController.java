@@ -113,7 +113,7 @@ public class CheckController {
 		if(data.getPay_type()==9)
 		{
 			Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
-			IllegalInfo illegalInfo=illegalInfoService.findByCardnumParkin(data.getCardNum(),parkInfo.getParkin());
+			IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 			Income income=new Income();
 			List<CouponData> coupons=couponService.findAllCouponByCardNum(data.getCardNum(), "");
 			if(coupons!=null&&coupons.size()>0)
@@ -150,7 +150,7 @@ public class CheckController {
 			}else if(data.getPay_type()==0)
 			{
 				Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
-				IllegalInfo illegalInfo=illegalInfoService.findByCardnumParkin(data.getCardNum(),parkInfo.getParkin());
+				IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 				double money=depotcard.getMoney();
 				List<CouponData> coupons=couponService.findAllCouponByCardNum(data.getCardNum(), "");
 				if(coupons!=null&&coupons.size()>0)
@@ -261,18 +261,18 @@ public class CheckController {
 	@ResponseBody
 	public Msg illegalSubmit(FormData data,HttpSession httpSession)
 	{
-		if(data.getCardNum() == null){
-			System.out.println("cardnum-null");
-		}else{
-
+		System.out.println("cardnum-null");
+//		通过车牌号来查找停车信息
+		ParkInfo parkInfo=parkinfoservice.findParkinfoByCarnum(data.getCarNum());
+		System.out.println(parkInfo);
 
 		User currentUser=(User) httpSession.getAttribute("user");
-		System.out.println(data);
+//		System.out.println(data);
 //		通过停车卡查找停车信息
-		ParkInfo parkInfo=parkinfoservice.findParkinfoByCardnum(data.getCardNum());
+//		ParkInfo parkInfo=parkinfoservice.findParkinfoByCardnum(data.getCardNum());
 		//System.out.println(parkInfo.getParkin()+"hell");
 		IllegalInfo info=new IllegalInfo();
-		IllegalInfo illegalInfo=illegalInfoService.findByCardnumParkin(data.getCardNum(),parkInfo.getParkin());
+		IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
 		{
 			return Msg.fail().add("va_msg", "已经添加过违规");
@@ -317,7 +317,6 @@ public class CheckController {
 		catch (Exception e) {
 			e.printStackTrace();
 			return Msg.fail().add("va_msg", "添加违规失败");
-		}
 		}
 		return Msg.success().add("va_msg", "添加违规成功");
 	}

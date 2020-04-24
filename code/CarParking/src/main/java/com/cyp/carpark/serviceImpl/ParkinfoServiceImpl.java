@@ -35,6 +35,9 @@ public class ParkinfoServiceImpl implements ParkinfoService {
 	public ParkInfo findParkinfoByCardnum(String cardnum) {
 		return parkinfoDao.findParkinfoByCardnum(cardnum);
 	}
+	public ParkInfo findParkinfoByCarnum(String carnum) {
+		return parkinfoDao.findParkinfoByCarnum(carnum);
+	}
 	public void updateCardnum(String cardnum, String cardnumNew) {
 		parkinfoDao.updateCardnum(cardnum,cardnumNew);
 	}
