@@ -8,10 +8,10 @@
 	onclick="$('div#main').load(this.href);return false;"></a>
 	<table class="table">
 				<caption>
-					<div style="float: left; line-height: 10px; padding: 10px 10px;">信息情况</div>
+					<div style="float: left; line-height: 10px; padding: 10px 10px;">预约情况</div>
 					<div class="col-lg-6" style="width: 30%; float: left;">
 						<div class="input-group">
-							<input placeholder="输入标题" id="content" type="text" class="form-control" > <span
+							<input placeholder="输入内容进行查询" id="content" type="text" class="form-control" > <span
 								class="input-group-btn">
 								<button class="btn btn-default" onclick="findByContent()" type="button">查询</button>
 							</span>
@@ -46,8 +46,8 @@
 				<tr>
 					<th>序号</th>
 					<th>发送人</th>
-					<th>收件人</th>
 					<th>标题</th>
+					<th>内容</th>
 					<th>发送时间</th>
 					<th>状态</th>
 					<th>操作</th>
@@ -56,8 +56,10 @@
 					<tr>
 						<td>${status.index+1 }</td>
 						<td>${item.sendUsername }</td>
-						<td>${item.toUsername==''?'管理员':item.toUsername }</td>
+
+<%--						<td>${item.toUsername==''?'管理员':item.toUsername }</td>--%>
 						<td>${item.title }</td>
+						<td>${item.content }</td>
 						<td>${item.time }</td>
 						<td>${item.isSend==1?'发送':item.isRead==0?'未读':item.isRead==1?'已读':'已回复' }</td>
 						<td><input class="btn btn-default" type="button" onclick="findDetail(${item.id })" value="查看"><input class="btn btn-default" type="button" onclick="deleteEmail(${item.id})" value="删除"></td>

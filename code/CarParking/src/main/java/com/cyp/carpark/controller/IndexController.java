@@ -504,6 +504,7 @@ public class IndexController {
 		pageUtil.setCount(count);
 		pageUtil.setCountPage(countPage);
 		pageUtil.setPages(emailDatas);
+		System.out.println(pageUtil.getPages());
 		model.addAttribute("emails", pageUtil);
 		model.addAttribute("tag", tag);
 		return "email";

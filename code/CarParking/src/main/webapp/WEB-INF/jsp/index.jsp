@@ -41,16 +41,21 @@ a:active {
 	background-color: #579ec8;
 }
 .topscan {
-	width: 100%;
-	min-height: 55px;
-	background-color: #79d39b;
-	position: relative;
+	background-image: url(${APP_PATH }/pic/topscan3.jpg);
+    /*background-image: linear-gradient(-90deg, #29bdd9 0%, #276ace 100%);*/
+    width: 100%;
+	height: 70px;
+	background-size:100% 100%;
+	/*overflow: hidden;*/
+	/*background-color: #79d39b;*/
+	/*position: relative;*/
 }
 .top-left {
 	color: white;
-	line-height: 20px;
+	/*line-height: 20px;*/
 	padding: 15px 10px;
 	float: left;
+	font-size: 22px;
 }
 .user-click {
 	float: right;
@@ -103,12 +108,12 @@ th {
 </head>
 <body>
 	<div class="topscan">
-		<div class="top-left"><span class="glyphicon glyphicon-home"></span><b> 欢迎使用停车场管理系统</b></div>
+		<div class="top-left" onclick="$('div#main').load(this.href);return false;"><a href="${APP_PATH }/index/toindex?tag=0" ><span class="glyphicon glyphicon-home"></span><b> 欢迎使用停车场管理系统</b></a></div>
 		
 		<div class="user-click">
 			<ul class="nav navbar-nav">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" style="color: white;"> <span class="glyphicon glyphicon-user"></span>欢迎,
+					data-toggle="dropdown" style="color: white;"> <span class="glyphicon glyphicon-user"></span>欢迎您,
 						${sessionScope.user.name } <b class="caret"></b>
 				</a>
 					<ul class="dropdown-menu">
@@ -129,7 +134,7 @@ th {
 				<li><a href="${APP_PATH }/index/findAllCoupon" target="main"
 					onclick="$('div#main').load(this.href);return false;"><span class="	glyphicon glyphicon-usd"></span> 优惠券管理</a></li>
 				<li><a href="${APP_PATH }/index/findAllEmail" target="main"
-					onclick="$('div#main').load(this.href);return false;"><span class="	glyphicon glyphicon-send"></span> 邮箱管理</a></li> 
+					onclick="$('div#main').load(this.href);return false;"><span class="	glyphicon glyphicon-pushpin"></span> 车位预约管理</a></li>
 				<li><a href="${APP_PATH }/index/findAllIllegalinfo" target="main"
 					onclick="$('div#main').load(this.href);return false;"><span class="glyphicon glyphicon-th-large"></span> 违规管理</a></li>
 				<c:if test="${sessionScope.user.role==1 }">

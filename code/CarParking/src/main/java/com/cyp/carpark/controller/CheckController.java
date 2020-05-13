@@ -87,11 +87,7 @@ public class CheckController {
 		}
 		}
 		System.out.println(model);
-
-		//JSONArray modelArray = JSONArray.parseArray(get);
 		parkinfoservice.saveParkinfo(data);
-//		System.out.println(data);
-//		System.out.println("carnum:"+data.getCarNum());
 		parkspaceService.changeStatus(data.getId(), 1,data.getCarNum());
 		return Msg.success();
 	}
@@ -261,16 +257,9 @@ public class CheckController {
 	@ResponseBody
 	public Msg illegalSubmit(FormData data,HttpSession httpSession)
 	{
-		System.out.println("cardnum-null");
-//		通过车牌号来查找停车信息
 		ParkInfo parkInfo=parkinfoservice.findParkinfoByCarnum(data.getCarNum());
-		System.out.println(parkInfo);
-
+//		System.out.println(parkInfo);
 		User currentUser=(User) httpSession.getAttribute("user");
-//		System.out.println(data);
-//		通过停车卡查找停车信息
-//		ParkInfo parkInfo=parkinfoservice.findParkinfoByCardnum(data.getCardNum());
-		//System.out.println(parkInfo.getParkin()+"hell");
 		IllegalInfo info=new IllegalInfo();
 		IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
@@ -280,35 +269,12 @@ public class CheckController {
 		info.setCardnum(data.getCardNum());
 		info.setCarnum(data.getCarNum());
 		String cardnum=data.getCarNum();
-		//String carnum=data.getCarNum();
-		//Depotcard depotcard=depotcardService.findByCardnum(cardnum);
-		//System.out.println(depotcard.getCardnum());
-	//	int cardid=0;
-		//User user =null;
-		/*if(depotcard!=null)
-		{
-		int cardid=depotcard.getId();
-
-		User user =userService.findUserByCardid(cardid);
-		System.out.println(user.getId()+"1");
-		info.setUid(user.getId());
-		}else {
-			info.setUid(i+1);
-		}*/
-		//info.setUsername(user.getUsername());
 		info.setIllegalInfo(data.getIllegalInfo());
-		
-	//	info.setUsername(data.get);
-	//	info.setUid(currentUser.getId());
-		//info.setUid(user.getId());
 		info.setUid(1);
 		Date date=new Date();
 		info.setTime(date);
-		
 		info.setParkin(parkInfo.getParkin());
-		
 		info.setDelete("N");
-
 		try {
 			
 		illegalInfoService.save(info);
