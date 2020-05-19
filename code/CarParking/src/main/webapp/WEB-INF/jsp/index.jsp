@@ -41,13 +41,13 @@ a:active {
 	background-color: #579ec8;
 }
 .topscan {
-	background-image: url(${APP_PATH }/pic/topscan3.jpg);
+	<%--background-image: url(${APP_PATH }/pic/topscan3.jpg);--%>
     /*background-image: linear-gradient(-90deg, #29bdd9 0%, #276ace 100%);*/
     width: 100%;
 	height: 70px;
 	background-size:100% 100%;
 	/*overflow: hidden;*/
-	/*background-color: #79d39b;*/
+	background-color: black;
 	/*position: relative;*/
 }
 .top-left {
@@ -310,11 +310,11 @@ th {
 					<div class="modal-body1">
 					<div id="pay_zfb">
 					<h4>支付宝：<span id="zfb_text"></span>元</h4>
-					<img alt="" style="width: 300px;height: 300px;margin-left: 20%" src="${APP_PATH }/pic/zfb.png">
+					<img alt="" style="width: 300px;height: 300px;margin-left: 20%" src="${APP_PATH }/pic/zfb.jpg">
 					</div>
 					<div id="pay_wx" hidden="hidden">
 					<h4>微信：<span id="wx_text"></span>元</h4>
-					<img alt="" style="width: 300px;height: 300px;margin-left: 20%" src="${APP_PATH }/pic/wx.png">
+					<img alt="" style="width: 300px;height: 300px;margin-left: 20%" src="${APP_PATH }/pic/wx.jpg">
 					</div>
 					<div id="pay_cash" hidden="hidden">
 					<h4>现金：<span id="cash_text"></span>元</h4>

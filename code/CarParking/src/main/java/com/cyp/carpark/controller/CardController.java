@@ -69,7 +69,6 @@ public class CardController {
 		}
 		Depotcard depotcard=depotcardService.save(depotcardManagerData);
 		double money=depotcardManagerData.getMoney();
-	//	System.out.println(money);
 		Income income=new Income();
 		if (depotcard==null) {
 			return Msg.fail().add("va_msg", "添加停车卡失败");
