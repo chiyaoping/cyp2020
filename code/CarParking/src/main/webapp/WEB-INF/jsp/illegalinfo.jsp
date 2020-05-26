@@ -110,7 +110,7 @@
 						$("#judgecarnum").val(1);
 						$("#parkin").val(data.extend.parkInfo.parkin);
 					} else {
-						$("#carNum").next("span").text("该车牌号不存在，请重新输入！");
+						$("#carNum").next("span").text("该车牌号不存在，请重新输入！！");
 						$("#judgecarnum").val(0);
 					}
 				}
