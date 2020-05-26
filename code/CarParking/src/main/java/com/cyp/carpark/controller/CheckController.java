@@ -206,6 +206,23 @@ public class CheckController {
 	}
 
 	/**
+	 * 通过车牌号查找停车信息
+	 * @param carnum
+	 * @return
+	 */
+	@RequestMapping("/index/check/findParkinfoByCarnum")
+	@ResponseBody
+	public Msg findParkinfoByCadnum(@RequestParam("carnum") String carnum) {
+		System.out.println("this is bycarnum");
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByCarnum(carnum);
+		//System.out.println("ello"+parkInfo.getId());
+		if(parkInfo!=null)
+		{
+			return Msg.success().add("parkInfo", parkInfo);
+		}
+		return Msg.fail();
+	}
+	/**
 	 * 通过停车卡查找停车信息
 	 * @param cardnum
 	 * @return

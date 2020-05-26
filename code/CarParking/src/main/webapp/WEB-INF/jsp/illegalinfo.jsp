@@ -100,9 +100,9 @@
 			$.ajax({
 				type:'get',
 				//调用的是查询车位信息，传参需要传parameter为卡号。
-				url:'./check/findParkinfoByCardnum',
+				url:'./check/findParkinfoByCarnum',
 				datatype : 'json',
-				data:{cardnum:carnum},
+				data:{carnum:carnum},
 				success : function(data) {
 					if (data.code == 100) {
 						$("#carNum").next("span").text("");
@@ -142,7 +142,7 @@
 		$.ajax({
 			type:'post',
 			url:'./check/illegalSubmit',
-			datatype:'text',
+			datatype:'json',
 			data:$("#checkForm").serializeArray(),
 			contentType:'application/x-www-form-urlencoded',
 			success:function(data){
