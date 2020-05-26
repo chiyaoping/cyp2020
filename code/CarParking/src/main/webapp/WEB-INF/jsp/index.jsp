@@ -762,7 +762,7 @@ $(document).ready(function(){
 					{
 					alert(data.extend.va_msg);
 				$("#myModal").modal('hide');
-				window.location.href="/depot_system_war_exploded/index/toindex";
+				// window.location.href="/depot_system_war_exploded/index/toindex";
 					}else{
 					alert(data.extend.va_msg)
 					}

@@ -16,7 +16,15 @@ public class FormData {
 	private int payid;
 	private int pay_money;
 	private int pay_type;
-	
+	private String judgecarnum;
+	public String getJudgecarnum() {
+		return judgecarnum;
+	}
+
+	public void setJudgecarnum(String judgecarnum) {
+		this.judgecarnum = judgecarnum;
+	}
+
 	public int getPayid() {
 		return payid;
 	}

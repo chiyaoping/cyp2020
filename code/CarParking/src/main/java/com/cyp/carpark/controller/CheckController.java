@@ -267,16 +267,16 @@ public class CheckController {
 	/**
 	 * 违规信息提交
 	 * @param data
-	 * @param httpSession
 	 * @return
 	 */
 	@RequestMapping("/index/check/illegalSubmit")
 	@ResponseBody
-	public Msg illegalSubmit(FormData data,HttpSession httpSession)
+	public Msg illegalSubmit(FormData data)
 	{
+		System.out.println("this is ill sub!");
 		ParkInfo parkInfo=parkinfoservice.findParkinfoByCarnum(data.getCarNum());
 //		System.out.println(parkInfo);
-		User currentUser=(User) httpSession.getAttribute("user");
+//		User currentUser=(User) httpSession.getAttribute("user");
 		IllegalInfo info=new IllegalInfo();
 		IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
@@ -285,7 +285,6 @@ public class CheckController {
 		}
 		info.setCardnum(data.getCardNum());
 		info.setCarnum(data.getCarNum());
-		String cardnum=data.getCarNum();
 		info.setIllegalInfo(data.getIllegalInfo());
 		info.setUid(1);
 		Date date=new Date();

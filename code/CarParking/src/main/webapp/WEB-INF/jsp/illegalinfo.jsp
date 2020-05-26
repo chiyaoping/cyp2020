@@ -21,7 +21,8 @@
 						</div>
 						<!-- /input-group -->
 					</div>
-					<button style="float: left;" class="btn btn-default" type="button" onclick="addIllegal()">添加违规</button>
+						<button style="float: left;" class="btn btn-default" type="button" onclick="addIllegal()">手动添加违规</button>
+						<button style="float: left;" class="btn btn-default" type="button" onclick="autoaddIllegal()">自动添加违规</button>
 					</c:if>
 				</caption>
 				<tr>
@@ -69,10 +70,9 @@
 	function addIllegal()
 	{
 		var html = "<input id=\"judgecarnum\" name=\"judgecarnum\" value=\"0\" hidden=\"hidden\"/>"
-				+"<input id=\"parkin\" name=\"parkin\" value=\"\" hidden=\"hidden\"/>"
-				+ "<label>车牌号：</label><div style=\"width: 30%;\">"
+				+"<label>车牌号：</label><div style=\"width: 30%;\">"
 				+ "<div class=\"input-group\">"
-				+ "<input id=\"carNum\" onblur=\"findCarnum()\" name=\"carNum\" placeholder=\"请输入车牌号\" type=\"text\" class=\"form-control\">"
+				+ "<input id=\"carNum\" onblur=\"findCarnum()\"   name=\"carNum\" placeholder=\"请输入车牌号\" type=\"text\" class=\"form-control\">"
 				+ "<span style=\"color: red;\"></span>"
 				+ "</div>"
 				+ "</div>"
@@ -99,7 +99,7 @@
 		} else {
 			$.ajax({
 				type:'get',
-				//调用的是查询车位信息，传参需要传parameter为卡号。
+				//调用的是查询车位信息，传车牌号。
 				url:'./check/findParkinfoByCarnum',
 				datatype : 'json',
 				data:{carnum:carnum},
@@ -142,7 +142,7 @@
 		$.ajax({
 			type:'post',
 			url:'./check/illegalSubmit',
-			datatype:'json',
+			datatype:'text',
 			data:$("#checkForm").serializeArray(),
 			contentType:'application/x-www-form-urlencoded',
 			success:function(data){

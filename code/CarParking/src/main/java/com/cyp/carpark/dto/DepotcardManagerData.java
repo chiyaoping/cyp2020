@@ -26,8 +26,7 @@ public class DepotcardManagerData implements Serializable{
 	private int payid;
 	
 	private Date deductedtime;
-	
-	//��0�ֽ�1֧������2΢�ţ�9�ӿ��п۷ѣ�
+
 	private int alertpayid;
 	
 	private int alertpay_money;
