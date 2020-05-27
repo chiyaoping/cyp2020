@@ -434,7 +434,7 @@ public class CheckController {
 			}
 			if(balance+money-illegalmoney<time*Constants.HOURMONEY)
 			{
-			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功"+(illegalmoney>0? ",停车产生的违规是："+illegalInfo.getIllegalInfo():""));
+			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney-money-balance)+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
 			}else{
 			return Msg.fail().add("type", 0).add("money_pay", time*Constants.HOURMONEY+illegalmoney-money);
 			}
@@ -471,7 +471,7 @@ public class CheckController {
 			}
 			if(balance+money-illegalmoney<time*Constants.HOURMONEY)
 			{
-			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功"+(illegalmoney>0? ",停车产生的违规是："+illegalInfo.getIllegalInfo():""));
+			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney-money-balance)+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
 			}else{
 			return Msg.fail().add("type", 0);
 			}

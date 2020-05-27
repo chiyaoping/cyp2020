@@ -26,11 +26,10 @@ public class SessionInterceptor extends HandlerInterceptorAdapter{
 	    User user=(User) request.getSession().getAttribute("user");
 	    if(null==user)
 	    {
-	    	// δ��¼ 
 	          PrintWriter out = response.getWriter(); 
 	          StringBuilder builder = new StringBuilder(); 
 	          builder.append("<script type=\"text/javascript\" charset=\"UTF-8\">"); 
-	          builder.append("alert(\"ҳ����ڣ������µ�¼\");"); 
+	          builder.append("alert(\"登录已过期\");");
 	          builder.append("window.top.location.href=\""); 
 	          builder.append(Constants.basePath); 
 	          builder.append("/login/login\";</script>"); 
@@ -42,11 +41,10 @@ public class SessionInterceptor extends HandlerInterceptorAdapter{
 	    if(user1==null)
 	    {
 	    	request.getSession().removeAttribute("user");
-	    	//��ɾ���û�
 	    	PrintWriter out = response.getWriter(); 
 	          StringBuilder builder = new StringBuilder(); 
 	          builder.append("<script type=\"text/javascript\" charset=\"UTF-8\">"); 
-	          builder.append("alert(\"���޸��û��������µ�¼\");"); 
+	          builder.append("alert(\"登录已过期\");");
 	          builder.append("window.top.location.href=\""); 
 	          builder.append(Constants.basePath); 
 	          builder.append("/login/login\";</script>"); 

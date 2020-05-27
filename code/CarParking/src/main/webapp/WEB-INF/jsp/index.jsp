@@ -282,7 +282,7 @@ th {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="submit" class="btn btn-primary"  >上传云端识别</button>
+				<button type="submit" class="btn btn-primary"  >进行自动入库</button>
 			</div>
      	 </form>
          
@@ -351,6 +351,11 @@ $(document).ready(function(){
 		$("#pay_wx").hide();
 		$("#loseSubmit").hide();
 	})
+	function showmsg() {
+		setTimeout(alert("自动入库成功！"),1000);
+
+
+	}
 	/* 入库模态框显示*/
 	function checkIn(parknum,id) {
 	    var tem=0;
@@ -408,29 +413,6 @@ $(document).ready(function(){
 		$("#id").val(parkId);
 	 }
 
-	/* 自动入库提交 */
-	// function autoCheckInSubmit(){
-	//
-	// 	$.ajax({
-	// 		type:'post',
-	// 		url:'./fileUpload1',
-	// 		datatype:'multipart/form-data',
-	// 		data:$("#fileUploadForm").serializeArray(),
-	// 		contentType:'application/x-www-form-urlencoded',
-	// 		success:function(data){
-	// 			alert("入库成功！");
-	// 			if(data.code==100)
-	// 				{
-	// 				alert("入库成功！");
-	//
-	// 			// window.location.href="/depot_system_war_exploded/index/toindex";
-	// 				}else{
-	// 					alert(data.extend.va_msg);
-	// 				}
-	// 		}
-	// 	})
-	// }
-	
 	/* 入库提交 */
 	function checkInSubmit(){
 		var parkTem=$("#parkTem option:selected").val();
@@ -563,7 +545,7 @@ $(document).ready(function(){
 					alert(data.extend.va_msg);
 					}
 				else{
-					alert(data.extend.money_pay);
+					alert("本次停车费为："+data.extend.money_pay);
 					$("#pay_type").val(data.extend.type);
 					$("#pay_money").val(data.extend.money_pay);
 					if(data.extend.type==9)

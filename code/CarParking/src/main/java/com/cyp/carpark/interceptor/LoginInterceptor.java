@@ -19,7 +19,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
 	    User user=(User) request.getSession().getAttribute("user");
 	    if(null!=user)
 	    {
-	    	  response.sendRedirect("/depot-system/index/toindex");
+	    	  response.sendRedirect("/depot_system_war_exploded/index/toindex");
 	    	  return false;
 	    }
 		return super.preHandle(request, response, handler);

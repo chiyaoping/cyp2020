@@ -154,9 +154,9 @@
 				+ "<input id=\"money\" name=\"money\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
 				+ "</div>"
 				+ "</div>"
-				+ "<label>优惠券数量：</label><div style=\"width: 30%;\">"
+				+ "<label>停车卡号：</label><div style=\"width: 30%;\">"
 				+ "<div class=\"input-group\">"
-				+ "<input id=\"count\" name=\"count\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
+				+ "<input id=\"cardnum\" name=\"cardnum\" type=\"text\" class=\"form-control\" unselectable=\"on\">"
 				+ "</div></div>";
 				$("#myModalLabel").html("添加优惠券");
 				$("#checkSubmit").html("添加");
@@ -174,7 +174,7 @@
 				data:$("#checkForm").serializeArray(),
 				success:function(data){
 					if(data.code==100){
-						alert("添加成功!");
+						alert("添加优惠券成功!");
 						$("#myModal").modal('hide');
 						$("#findAllCoupon").attr("href","${APP_PATH }/index/findAllCoupon");
 						$("#findAllCoupon").click();

@@ -64,39 +64,48 @@ public class CouponController {
 	public Msg setCoupon(CouponData couponData)
 	{
 		int money=couponData.getMoney();
-		int count=couponData.getCount();
-		if(userService.findAllUserCount(3)<count)
-		{
-			return Msg.fail().add("va_msg", "您没有权限设置优惠券。");
-		}
-		List<User> list=userService.finAllUserByRole(3); 
-		Set<User> userSet=new HashSet<User>();
-		for(User user:list)
-		{
-			userSet.add(user);
-		}
-		Iterator<User> it = userSet.iterator();  
-		int c=0;
-		try {
-			while (it.hasNext()) {  
-				if(c>=count)
-				{
-					break;
-				}
-				String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-				User user = it.next();
-				Depotcard depotcard=depotcardService.findByCardid(user.getCardid());
-				Coupon coupon=new Coupon();
-				coupon.setCouponNum(uuid);
-				coupon.setCardnum(depotcard.getCardnum());
-				coupon.setMoney(money);
-				coupon.setTime(new Date());
-				couponService.addCoupon(coupon);
-				c++;
-			}  
-		} catch (Exception e) {
-			return Msg.fail().add("va_msg", "设置优惠券失败");
-		}
-		return Msg.success();
+		String cardnum=couponData.getCardnum();
+		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+		Coupon coupon=new Coupon();
+		coupon.setCouponNum(uuid);
+		coupon.setCardnum(cardnum);
+		coupon.setMoney(money);
+		coupon.setTime(new Date());
+		couponService.addCoupon(coupon);
+		return Msg.success().add("va_msg", "设置优惠券成功");
+//		if(userService.findAllUserCount(3)<count)
+//		{
+//			return Msg.fail().add("va_msg", "您没有权限设置优惠券。");
+//		}
+
+//		List<User> list=userService.finAllUserByRole(3);
+//		Set<User> userSet=new HashSet<User>();
+//		for(User user:list)
+//		{
+//			userSet.add(user);
+//		}
+//		Iterator<User> it = userSet.iterator();
+//		int c=0;
+//		try {
+//			while (it.hasNext()) {
+//				if(c>=count)
+//				{
+//					break;
+//				}
+//				String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+//				User user = it.next();
+//				Depotcard depotcard=depotcardService.findByCardid(user.getCardid());
+//				Coupon coupon=new Coupon();
+//				coupon.setCouponNum(uuid);
+//				coupon.setCardnum(depotcard.getCardnum());
+//				coupon.setMoney(money);
+//				coupon.setTime(new Date());
+//				couponService.addCoupon(coupon);
+//				c++;
+//			}
+//		} catch (Exception e) {
+//			return Msg.fail().add("va_msg", "设置优惠券失败");
+//		}
+
 	}
 }

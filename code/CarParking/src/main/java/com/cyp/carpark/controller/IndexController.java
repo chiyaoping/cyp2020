@@ -461,13 +461,12 @@ public class IndexController {
 		PageUtil<EmailData> pageUtil=new PageUtil<EmailData>();
 		int count =0;
 		int countPage=0;
-		User user1 = (User) session.getAttribute("user");
+		User user1 = (User) session.getAttribute("user");//得到当前登录的用户
 		if (user1.getRole()==1||user1.getRole()==2) {
 			emails=emailService.findByToId(1);
 		}else {
 			emails=emailService.findByToId(user1.getId());
 		}
-		//emails=emailService.findByToId(1);
 		List<EmailData> emailDatas=new ArrayList<EmailData>();
 		for(EmailData emailData:emails)
 		{
@@ -494,6 +493,7 @@ public class IndexController {
 			emailData.setSendUsername(sendUser.getUsername());
 			emailDatas.add(emailData);
 		}
+		System.out.println(":4");
 		count=emailService.findAllEmailCountByUser(user1.getId(),user1.getRole());
 		countPage=count/10;
 		if(count%10!=0)
@@ -503,6 +503,7 @@ public class IndexController {
 		pageUtil.setCurrent(page);
 		pageUtil.setCount(count);
 		pageUtil.setCountPage(countPage);
+		System.out.println(":5");
 		pageUtil.setPages(emailDatas);
 		System.out.println(pageUtil.getPages());
 		model.addAttribute("emails", pageUtil);
