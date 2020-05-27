@@ -409,26 +409,27 @@ $(document).ready(function(){
 	 }
 
 	/* 自动入库提交 */
-	function autoCheckInSubmit(){
-		
-		$.ajax({
-			type:'post',
-			url:'./fileUpload1',
-			datatype:'multipart/form-data',
-			data:$("#fileUploadForm").serializeArray(),
-			contentType:'application/x-www-form-urlencoded',
-			success:function(data){
-				if(data.code==100)
-					{
-					alert("入库成功！");
-			
-				window.location.href="/depot_system_war_exploded/index/toindex";
-					}else{
-						alert(data.extend.va_msg);
-					}
-			}
-		})
-	}
+	// function autoCheckInSubmit(){
+	//
+	// 	$.ajax({
+	// 		type:'post',
+	// 		url:'./fileUpload1',
+	// 		datatype:'multipart/form-data',
+	// 		data:$("#fileUploadForm").serializeArray(),
+	// 		contentType:'application/x-www-form-urlencoded',
+	// 		success:function(data){
+	// 			alert("入库成功！");
+	// 			if(data.code==100)
+	// 				{
+	// 				alert("入库成功！");
+	//
+	// 			// window.location.href="/depot_system_war_exploded/index/toindex";
+	// 				}else{
+	// 					alert(data.extend.va_msg);
+	// 				}
+	// 		}
+	// 	})
+	// }
 	
 	/* 入库提交 */
 	function checkInSubmit(){

@@ -2,15 +2,22 @@ package com.cyp.carpark.controller;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import com.cyp.carpark.utils.Base64ImageUtils;
+import com.cyp.carpark.utils.HttpClientUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +45,7 @@ import com.cyp.carpark.service.ParkspaceService;
 import com.cyp.carpark.service.UserService;
 import com.cyp.carpark.utils.Constants;
 import com.cyp.carpark.utils.Msg;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Controller
@@ -275,8 +283,6 @@ public class CheckController {
 	{
 		System.out.println("this is ill sub!");
 		ParkInfo parkInfo=parkinfoservice.findParkinfoByCarnum(data.getCarNum());
-//		System.out.println(parkInfo);
-//		User currentUser=(User) httpSession.getAttribute("user");
 		IllegalInfo info=new IllegalInfo();
 		IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
@@ -303,6 +309,76 @@ public class CheckController {
 		return Msg.success().add("va_msg", "添加违规成功");
 	}
 
+	/**
+	 * 自动添加违规信息
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping("/index/check/autoillegalSubmit")
+	public String autoillegalSubmit(@RequestParam("file") MultipartFile file,@RequestParam("illegalInfo") String illegalInfo)
+	{
+		System.out.println(illegalInfo);
+		String fileName = file.getOriginalFilename();
+		@SuppressWarnings("unused")
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		String filePath = "C:\\springUpload\\image\\";
+		// fileName = UUID.randomUUID() + suffixName;
+		File dest = new File(filePath + fileName);
+		System.out.println("file-path:"+dest.toString());
+		if (!dest.getParentFile().exists()) {
+			dest.getParentFile().mkdirs();
+		}
+		try {
+			file.transferTo(dest);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String token = "24.2fdf50fc57f6f37ebab5974f8193bf22.2592000.1592396491.282335-19309228";
+		String Filepath = dest.toString();
+		String image = Base64ImageUtils.GetImageStrFromPath(Filepath);
+		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate?access_token="+token;
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		Map<String, String> bodys = new HashMap<String, String>();
+		bodys.put("image", image);
+		try {
+			CloseableHttpResponse response2 =  HttpClientUtils.doHttpsPost(url,headers,bodys);
+			String Sreq = HttpClientUtils.toString(response2);
+			System.out.println(HttpClientUtils.toString(response2));
+			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(9,16);
+
+			ParkInfo parkInfo=parkinfoservice.findParkinfoByCarnum(realCarnum);
+			IllegalInfo info=new IllegalInfo();
+			IllegalInfo illegalInfoall=illegalInfoService.findByCarnum(realCarnum,parkInfo.getParkin());
+			if(illegalInfoall!=null)
+			{
+//				return Msg.fail().add("va_msg", "已经添加过违规");
+			}
+//			info.setCardnum(data.getCardNum());
+			info.setCarnum(realCarnum);
+			info.setIllegalInfo(illegalInfo);
+			info.setUid(1);
+			Date date=new Date();
+			info.setTime(date);
+			info.setParkin(parkInfo.getParkin());
+			info.setDelete("N");
+			try {
+
+				illegalInfoService.save(info);
+//				return Msg.success().add("va_msg", "添加违规成功");
+				return "illegalinfo";
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+//				return Msg.fail().add("va_msg", "添加违规失败");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		return Msg.success().add("va_msg", "添加违规成功");
+		return "illegalinfo";
+	}
 	/**
 	 * 计算停车费，判断停车位是否支付成功
 	 * @param parknum

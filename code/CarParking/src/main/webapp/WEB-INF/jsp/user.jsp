@@ -42,7 +42,7 @@
 		<c:if test="${sessionScope.user.role!=3 }">
 		<th>权限</th>
 		</c:if>
-		<th>用户卡</th>
+		<th>停车卡号</th>
 		<th>操作</th>
 	</tr>
 	<c:forEach items="${users.pages }" var="item" varStatus="status">

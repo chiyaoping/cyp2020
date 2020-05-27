@@ -71,7 +71,7 @@
 			type:'post',
 			datatype:'json',
 			data:{id:item},
-			url:'/depot-system/index/depot/findParkinfoById',
+			url:'./depot/findParkinfoById',
 			success:function(data){
 				if(data.code==100)
 					{
@@ -94,7 +94,7 @@
 						+ "<div class=\"input-group\">"
 						+ "<input value=\""+data.extend.parkinfoall.parkout+"\" type=\"text\" class=\"form-control\" readonly  unselectable=\"on\">"
 						+ "</div></div>";
-						$("#myModalLabel").html("收入详情");
+						$("#myModalLabel").html("停车详情");
 						$("#checkSubmit").hide();
 						$(".modal-body").append(html);
 						$("#myModal").modal('show');

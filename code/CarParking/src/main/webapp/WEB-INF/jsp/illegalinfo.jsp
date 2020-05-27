@@ -22,7 +22,7 @@
 						<!-- /input-group -->
 					</div>
 						<button style="float: left;" class="btn btn-default" type="button" onclick="addIllegal()">手动添加违规</button>
-						<button style="float: left;" class="btn btn-default" type="button" onclick="autoaddIllegal()">自动添加违规</button>
+						<button style="float: left;" class="btn btn-default" type="button" style="margin-left: 30px;" onclick="autoaddIllegal()">自动添加违规</button>
 					</c:if>
 				</caption>
 				<tr>
@@ -91,7 +91,33 @@
 		$(".modal-body").append(html);
 		$("#myModal").modal('show');
 	}
-	
+
+	function autoaddIllegal()
+	{
+		var html = "<form action=\"http://localhost:8080/depot_system_war_exploded/index/check/autoillegalSubmit\" method=\"POST\" enctype=\"multipart/form-data\" target=\"nm_iframe\" id=\"fileUploadForm\">"
+				+"<label>选择车牌图片：</label><div style=\"width: 30%;\">"
+				+ "<div class=\"input-group\">"
+				+ "<input type=\"file\" name=\"file\" class=\"file\" />"
+				+ "</div>"
+				+ "</div>"
+				+ "<label>违规原因：</label><div style=\"width: 30%;\">"
+				+ "<div class=\"input-group\">"
+				+ "<textarea id=\"illegalInfo\" name=\"illegalInfo\" placeholder=\"请输入违规原因\" type=\"text\" class=\"form-control\" ></textarea>"
+				+ "</div></div>"
+				+"<button type=\"submit\" class=\"btn btn-primary\" onclick=\"showmsg()\" style=\"float:left;margin-top: 28px;\" >添加违规</button>"
+				+"</form>"
+				+"<iframe id=\"id_iframe\" name=\"nm_iframe\" style=\"display:none;\"></iframe>";
+		$("#myModalLabel").html("自动添加违规信息");
+		$("#checkSubmit").html("添加");
+		$("#checkSubmit").attr("style","display:none;");
+		$(".modal-body").append(html);
+		$("#myModal").modal('show');
+	}
+
+	function showmsg() {
+		setTimeout(alert("添加违规成功"),1000)
+		$("#myModal").modal('hide');
+	}
 	function findCarnum() {
 		var carnum = $("#carNum").val();
 		if (carnum == ""|| carnum==null) {
@@ -159,7 +185,7 @@
 			}
 		}) 
 	}
-	
+
 	function findIllegalInfo(item)
 	{
 		$.ajax({

@@ -35,6 +35,7 @@ import com.cyp.carpark.service.PlateRecognise;
 import com.cyp.carpark.service.UserService;
 import com.cyp.carpark.utils.Base64ImageUtils;
 import com.cyp.carpark.utils.HttpClientUtils;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ImageRPController {
@@ -90,6 +91,12 @@ public class ImageRPController {
 
 	}
 
+	@RequestMapping(value = "/getCarnum")
+	public String getCarnum(@RequestParam("file") MultipartFile file){
+		RedirectAttributes attr = null;
+		attr.addFlashAttribute("","");
+		return "redirect:/index/toindex";
+	}
 	@RequestMapping(value = "/comeinBycarnum")
 	public String comeinBycarnum(@RequestParam("carnum") String realCarnum,@RequestParam("parkid")int parkid,HttpServletResponse response,HttpServletRequest request) {
 		FormData formData=new FormData();
@@ -117,7 +124,7 @@ public class ImageRPController {
 		int parkId=id;
 		ParkInfo parkInfo=new ParkInfo();
 		FormData formData=new FormData();
-		System.out.println(parkId);
+		System.out.println(file);
 	
 		String fileName = file.getOriginalFilename();
 		@SuppressWarnings("unused")
@@ -134,16 +141,12 @@ public class ImageRPController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		String token = "24.2fdf50fc57f6f37ebab5974f8193bf22.2592000.1592396491.282335-19309228";
-
 		String Filepath = dest.toString();
 		String image = Base64ImageUtils.GetImageStrFromPath(Filepath);
 		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate?access_token="+token;
-
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
-
 		Map<String, String> bodys = new HashMap<String, String>();
 		bodys.put("image", image);
 		try {
@@ -151,7 +154,7 @@ public class ImageRPController {
 			String Sreq = HttpClientUtils.toString(response2);
 			System.out.println(HttpClientUtils.toString(response2));
 			System.out.println("jsonObject:".substring(0,5));
-			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(10,17);
+			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(9,16);
 			parkspaceService.changeStatus(parkId, 1,realCarnum);
 			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
 					formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
