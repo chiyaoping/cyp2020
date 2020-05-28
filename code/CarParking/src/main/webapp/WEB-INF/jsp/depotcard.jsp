@@ -168,7 +168,7 @@ function addDepotCardSubmit(){
 		success:function(data){
 			if(data.code==100)
 				{
-				alert("添加成功！您的卡号为："+data.extend.depotcard.cardnum+"。<br/>账号密码为："+data.extend.username+"。");
+				alert("添加成功！您的卡号为："+data.extend.depotcard.cardnum+"。账号密码为："+data.extend.username+"。");
 				}else{
 				alert("添加失败！账号已存在，请重新输入。");
 				return false;

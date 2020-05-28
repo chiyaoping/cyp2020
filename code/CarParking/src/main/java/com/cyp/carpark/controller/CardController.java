@@ -88,6 +88,7 @@ public class CardController {
 			depotcardService.updateDepotcardBycardnum(depotcard);
 			income.setMoney(Constants.YEARCARD);
 		}
+		//将停车卡的收入加入收入信息
 		income.setCardnum(depotcard.getCardnum());
 		income.setTime(new Date());
 		income.setMoney(money);
@@ -95,6 +96,7 @@ public class CardController {
 		income.setMethod(depotcardManagerData.getPayid());
 		income.setSource(0);
 		incomeService.save(income);
+		//创建停车卡也同时创建一个用户
 		userService.saveByaddDepotCard(depotcardManagerData.getUsername(), depotcardManagerData.getName(), depotcard.getId());
 			return Msg.success().add("depotcard", depotcard).add("username", depotcardManagerData.getUsername());	
 	}

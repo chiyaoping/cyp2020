@@ -212,10 +212,8 @@ public class CheckController {
 	 */
 	@RequestMapping("/index/check/findParkinfoByCarnum")
 	@ResponseBody
-	public Msg findParkinfoByCadnum(@RequestParam("carnum") String carnum) {
-		System.out.println("this is bycarnum");
+	public Msg findParkinfoByCarnum(@RequestParam("carnum") String carnum) {
 		ParkInfo parkInfo = parkinfoservice.findParkinfoByCarnum(carnum);
-		//System.out.println("ello"+parkInfo.getId());
 		if(parkInfo!=null)
 		{
 			return Msg.success().add("parkInfo", parkInfo);
