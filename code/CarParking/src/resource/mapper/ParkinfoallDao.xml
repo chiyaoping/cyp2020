@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cyp.carpark.dao.ParkinfoallDao">
 	<select id="findAllParkinfoall" resultType="com.cyp.carpark.dto.ParkinfoallData">
-		SELECT * from parkinfoall limit #{page},#{size}
+		SELECT * from parkinfoall order by parkinfoall.id desc limit #{page},#{size}
 	</select>
 	<select id="findAllParkinfoallByLike" resultType="com.cyp.carpark.dto.ParkinfoallData">
 		SELECT * from parkinfoall t where t.cardnum like '%${name}%' || t.carnum like '%${name}%' || t.parknum like '%${name}%' limit #{page},#{size}

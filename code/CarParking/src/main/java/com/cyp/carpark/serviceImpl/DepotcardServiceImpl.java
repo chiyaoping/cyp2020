@@ -31,7 +31,6 @@ public class DepotcardServiceImpl implements DepotcardService {
 		String dateStr=trans.replaceAll(" ", "").replaceAll("-", "");
 		String cardnum=depotcardManagerData.getUsername()+dateStr;
 		Depotcard depotcardTem=depotcardDao.findByCardnum(cardnum);
-		//ͣ�����Ѵ���
 		if(depotcardTem!=null)
 		{
 			return null;

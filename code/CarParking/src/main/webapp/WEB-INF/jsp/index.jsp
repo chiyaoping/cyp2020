@@ -534,38 +534,51 @@ $(document).ready(function(){
 			url:'./check/ispay',
 			datatype:'json',
 			data:{parknum:parknum},
-			success:function(data){
-				if(data.code==100)
-					{
-					$("#myModal1").modal('show');
-					$("#zfb_text").text(data.extend.money_pay);
-					$("#wx_text").text(data.extend.money_pay);
-					$("#cash_text").text(data.extend.money_pay);
-					$("#pay_money").val(data.extend.money_pay);
-					alert(data.extend.va_msg);
-					}
-				else{
-					alert("本次停车费为："+data.extend.money_pay);
-					$("#pay_type").val(data.extend.type);
-					$("#pay_money").val(data.extend.money_pay);
-					if(data.extend.type==9)
-						{
-						alert("系统出错！");
-						return false;
+			success:
+					function (data) {
+						$("#pay_money").val(data.extend.money_pay);
+						console.log(data)
+						if (data.extend.money_pay == 0) {
+							alert(data.extend.va_msg);
+							checkOutSubmit();
+						} else if(data.extend.type == 1){
+							alert(data.extend.va_msg);
+							checkOutSubmit();
 						}
-					//直接用卡扣费
-					if(data.extend.type==0)
-						{
-						checkOutSubmit();
+						else {
+							alert(data.extend.va_msg);
+							$("#myModal1").modal('show');
+							$("#zfb_text").text(data.extend.money_pay);
+							$("#wx_text").text(data.extend.money_pay);
+							$("#cash_text").text(data.extend.money_pay);
+							$("#pay_money").val(data.extend.money_pay);
+							// // alert("本次停车费为：" + data.extend.money_pay);
+							// alert(data.extend.va_msg);
+							// $("#pay_type").val(data.extend.type);
+							// $("#pay_money").val(data.extend.money_pay);
+							// if (data.extend.type == 9) {
+							// 	alert("系统出错！");
+							//
+							// 	return false;
+
+							// }
+							//直接用卡扣费
+							// if (data.extend.type == 1) {
+							// 	$("#myModal1").modal('show');
+							// 	$("#zfb_text").text(data.extend.money_pay);
+							// 	$("#wx_text").text(data.extend.money_pay);
+							// 	$("#cash_text").text(data.extend.money_pay);
+							// 	$("#pay_money").val(data.extend.money_pay);
+							// 	checkOutSubmit();
+							// }
+							// //月卡或年卡还没到期
+							// else {
+							// 	checkOutSubmit();
+							// }
 						}
-					//月卡或年卡还没到期
-					else{
-						checkOutSubmit();
+						$("#paySubmit").attr("onclick", "checkOutSubmit()");
 					}
-				}
-				$("#paySubmit").attr("onclick","checkOutSubmit()");
-			}
-		}) 
+		 })
 	}
 	/* 出库提交 */
 	function checkOutSubmit(){

@@ -110,94 +110,86 @@ public class CheckController {
 	@ResponseBody
 	@Transactional
 	public Msg checkOut(Model model, FormData data) {
-		int pay_money=data.getPay_money();
-		Date parkout=new Date();
-		Parkinfoall parkinfoall=new Parkinfoall();
-		ParkInfo parkInfo=parkinfoservice.findParkinfoByParknum(data.getParkNum());
-		if(data.getPay_type()==9)
-		{
-			Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
-			IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
-			Income income=new Income();
-			List<CouponData> coupons=couponService.findAllCouponByCardNum(data.getCardNum(), "");
-			if(coupons!=null&&coupons.size()>0)
-			{
+		int pay_money = data.getPay_money();
+		System.out.println(data);
+		Date parkout = new Date();
+		Parkinfoall parkinfoall = new Parkinfoall();
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(data.getParkNum());
+		System.out.println(parkInfo);
+		if(!StringUtils.isEmpty(data.getCardNum())) {
+			System.out.println("come in");
+			double cardbalance = depotcardService.findByCardnum(data.getCardNum()).getMoney();
+			List<CouponData> coupons = couponService.findAllCouponByCardNum(data.getCardNum(), "");
+			//有优惠券的情况下，先扣除优惠券的金额然后再扣除停车卡金额
+			if (coupons != null && coupons.size() > 0) {
+
 				couponService.deleteCoupon(coupons.get(0).getId());
+			} else {
+				if (cardbalance > pay_money)
+					depotcardService.addMoney(data.getCardNum(), cardbalance - pay_money);
+				//保存收入信息
+				Income income = new Income();
+				income.setMoney(pay_money);
+				income.setCardnum(data.getCardNum());
+				income.setCarnum(data.getCarNum());
+				income.setTime(parkout);
+				income.setSource(1);
+				income.setMethod(9);
+				Date parkin = parkInfo.getParkin();
+				long day = parkout.getTime() - parkin.getTime();
+				long time = day / (1000 * 60);
+				if (day % (1000 * 60) > 0) {
+					time += 1;
+				}
+				IllegalInfo illegalInfo = illegalInfoService.findByCarnum(data.getCarNum(), parkInfo.getParkin());
+				if (illegalInfo != null) {
+					income.setIsillegal(1);
+				}
+				income.setDuration(time);
+				incomeService.save(income);
 			}
-			depotcardService.addMoney(data.getCardNum(), 0);
+			//保存到历史停车信息
+			parkinfoall.setCardnum(parkInfo.getCardnum());
+			parkinfoall.setCarnum(parkInfo.getCarnum());
+			parkinfoall.setParkin(parkInfo.getParkin());
+			parkinfoall.setParknum(data.getParkNum());
+			parkinfoall.setParkout(parkout);
+			parkinfoall.setParktemp(parkInfo.getParktem());
+			parkinfoallService.save(parkinfoall);
+			parkspaceService.changeStatusByParkNum(data.getParkNum(), 0);
+			parkinfoservice.deleteParkinfoByParkNum(data.getParkNum());
+		}else{
+			//保存收入信息
+			System.out.println("this is else");
+			Income income = new Income();
 			income.setMoney(pay_money);
-			income.setMethod(data.getPayid());
-			income.setCardnum(data.getCardNum());
+			income.setCardnum("");
 			income.setCarnum(data.getCarNum());
-			if(depotcard!=null)
-			{
-			income.setType(depotcard.getType());
-			}
-			if(illegalInfo!=null)
-			{
-				income.setIsillegal(1);
-			}
-			income.setSource(1);
 			income.setTime(parkout);
-			Date parkin=parkInfo.getParkin();
-			long day=parkout.getTime()-parkin.getTime();
-			long time=day/(1000*60);
-			if(day%(1000*60)>0){
-			time+=1;
+			income.setSource(1);
+			Date parkin = parkInfo.getParkin();
+			long day = parkout.getTime() - parkin.getTime();
+			long time = day / (1000 * 60);
+			if (day % (1000 * 60) > 0) {
+				time += 1;
+			}
+			IllegalInfo illegalInfo = illegalInfoService.findByCarnum(data.getCarNum(), parkInfo.getParkin());
+			if (illegalInfo != null) {
+				income.setIsillegal(1);
 			}
 			income.setDuration(time);
 			incomeService.save(income);
-		}else{
-			if(data.getPay_type()==9)
-			{
-				return Msg.fail().add("va_msg", "支付类型出错");
-			}else if(data.getPay_type()==0)
-			{
-				Depotcard depotcard=depotcardService.findByCardnum(data.getCardNum());
-				IllegalInfo illegalInfo=illegalInfoService.findByCarnum(data.getCarNum(),parkInfo.getParkin());
-				double money=depotcard.getMoney();
-				List<CouponData> coupons=couponService.findAllCouponByCardNum(data.getCardNum(), "");
-				if(coupons!=null&&coupons.size()>0)
-				{
-					money-=coupons.get(0).getMoney();
-					couponService.deleteCoupon(coupons.get(0).getId());
-				}
-				money-=pay_money;
-				depotcardService.addMoney(depotcard.getCardnum(),money);
-				/*Income income=new Income();
-				income.setMoney(pay_money);
-				income.setMethod(data.getPayid());
-				income.setCardnum(data.getCardNum());
-				income.setCarnum(data.getCarNum());
-				income.setType(depotcard.getType());
-				if(illegalInfo!=null)
-				{
-					income.setIsillegal(1);
-				}
-				income.setSource(1);
-				income.setTime(parkout);*/
-				/*Date parkin=parkInfo.getParkin();
-				long day=parkout.getTime()-parkin.getTime();
-				long time=day/(1000*60);
-				if(day%(1000*60)>0){
-				time+=1;
-				}
-				income.setDuration(time);
-				income.setTrueincome(1);
-				incomeService.save(income);*/
-			}else{
-
-			}
+			//保存到历史停车信息
+			parkinfoall.setCardnum(parkInfo.getCardnum());
+			parkinfoall.setCarnum(parkInfo.getCarnum());
+			parkinfoall.setParkin(parkInfo.getParkin());
+			parkinfoall.setParknum(data.getParkNum());
+			parkinfoall.setParkout(parkout);
+			parkinfoall.setParktemp(parkInfo.getParktem());
+			parkinfoallService.save(parkinfoall);
+			parkspaceService.changeStatusByParkNum(data.getParkNum(), 0);
+			parkinfoservice.deleteParkinfoByParkNum(data.getParkNum());
 		}
-		parkinfoall.setCardnum(parkInfo.getCardnum());
-		parkinfoall.setCarnum(parkInfo.getCarnum());
-		parkinfoall.setParkin(parkInfo.getParkin());
-		parkinfoall.setParknum(data.getParkNum());
-		parkinfoall.setParkout(parkout);
-		parkinfoall.setParktemp(parkInfo.getParktem());
-		parkinfoallService.save(parkinfoall);
-		parkspaceService.changeStatusByParkNum(data.getParkNum(),0);
-		parkinfoservice.deleteParkinfoByParkNum(data.getParkNum());
 		return Msg.success();
 	}
 
@@ -322,7 +314,6 @@ public class CheckController {
 		@SuppressWarnings("unused")
 		String suffixName = fileName.substring(fileName.lastIndexOf("."));
 		String filePath = "C:\\springUpload\\image\\";
-		// fileName = UUID.randomUUID() + suffixName;
 		File dest = new File(filePath + fileName);
 		System.out.println("file-path:"+dest.toString());
 		if (!dest.getParentFile().exists()) {
@@ -354,7 +345,6 @@ public class CheckController {
 			{
 //				return Msg.fail().add("va_msg", "已经添加过违规");
 			}
-//			info.setCardnum(data.getCardNum());
 			info.setCarnum(realCarnum);
 			info.setIllegalInfo(illegalInfo);
 			info.setUid(1);
@@ -363,9 +353,7 @@ public class CheckController {
 			info.setParkin(parkInfo.getParkin());
 			info.setDelete("N");
 			try {
-
 				illegalInfoService.save(info);
-//				return Msg.success().add("va_msg", "添加违规成功");
 				return "illegalinfo";
 			}
 			catch (Exception e) {
@@ -376,11 +364,10 @@ public class CheckController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		return Msg.success().add("va_msg", "添加违规成功");
 		return "illegalinfo";
 	}
 	/**
-	 * 计算停车费，判断停车位是否支付成功
+	 * 计算停车费用
 	 * @param parknum
 	 * @return
 	 */
@@ -388,6 +375,7 @@ public class CheckController {
 	@ResponseBody
 	public Msg ispay(@RequestParam("parknum") Integer parknum)
 	{
+		//查找该停车位的停车信息
 		ParkInfo parkInfo=parkinfoservice.findParkinfoByParknum(parknum.intValue());
 		Date date=new Date();
 		Date parkin;
@@ -398,11 +386,13 @@ public class CheckController {
 		{
 			return Msg.fail().add("type", 9);
 		}
+		//查找该车牌号是否违规
 		IllegalInfo illegalInfo=illegalInfoService.findByCarnum(parkInfo.getCarnum(),parkInfo.getParkin());
 		if(illegalInfo!=null)
 		{
 			illegalmoney=Constants.ILLEGAL;
 		}
+		//没有停车卡，则现金或扫码支付
 		if(StringUtils.isEmpty(parkInfo.getCardnum()))
 		{
 			parkin=parkInfo.getParkin();
@@ -413,18 +403,19 @@ public class CheckController {
 			if(day%(1000*60*60)>0){
 			time+=1;
 			}
-			return Msg.success().add("money_pay", time*Constants.TEMPMONEY+illegalmoney).add("va_msg", "出库成功"+(illegalmoney>0? ",停车产生的违规是："+illegalInfo.getIllegalInfo():""));
+
+			return Msg.success().add("money_pay", time*Constants.TEMPMONEY+illegalmoney).add("va_msg", "欢迎下次使用！"+"\n本次停车费用为"+(time*Constants.TEMPMONEY+illegalmoney)+"元"+(illegalmoney>0? "\n停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
 		}
 		String cardnum=parkInfo.getCardnum();
 		Depotcard depotcard=depotcardService.findByCardnum(cardnum);
 		if(depotcard!=null&&depotcard.getType()==1)
 		{
 			double balance=depotcard.getMoney();
-			int money=0;
-			List<CouponData> coupons=couponService.findAllCouponByCardNum(cardnum, "");
+			int couponmoney=0;
+			List<CouponData> coupons=couponService.findAllCouponByCardNum(cardnum, "");//查找对应停车卡的优惠券
 			if(coupons!=null&&coupons.size()>0)
 			{
-				money=coupons.get(0).getMoney();
+				couponmoney=coupons.get(0).getMoney();
 			}
 			parkin=parkInfo.getParkin();
 			day=date.getTime()-parkin.getTime();
@@ -432,50 +423,53 @@ public class CheckController {
 			if(day%(1000*60*60)>0){
 			time+=1;
 			}
-			if(balance+money-illegalmoney<time*Constants.HOURMONEY)
+			if(balance+couponmoney-illegalmoney>=time*Constants.HOURMONEY)
 			{
-			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney-money-balance)+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
+			return Msg.success().add("type",1).add("money_pay", time*Constants.HOURMONEY).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY)+"元"+(couponmoney>time*Constants.HOURMONEY?"\n本次停车由优惠券全额抵扣，无需付费，欢迎下次使用!":"")+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():"")+(couponmoney>0?("\n当前停车卡余额还剩"+(balance)+"元"):("\n当前停车卡余额还剩"+(balance-time*Constants.HOURMONEY)+"元")));
 			}else{
-			return Msg.fail().add("type", 0).add("money_pay", time*Constants.HOURMONEY+illegalmoney-money);
+			return Msg.fail().add("money_pay", time*Constants.HOURMONEY+illegalmoney-couponmoney).add("va_msg","停车卡费用不足，请支付现金或扫码支付。");
 			}
 		}
-		Date deductedtime=depotcard.getDeductedtime();
-		if(depotcard.getType()>1)
-		{
-		day=date.getTime()-deductedtime.getTime();
+		else if(depotcard.getType()==2){
+			return Msg.success().add("money_pay", 0).add("va_msg","尊敬的月卡用户，欢迎下次使用！");
 		}
-		if(depotcard.getType()==3){
-			time=day/(1000*60*60*24*30);
+		else{
+			return Msg.success().add("money_pay", 0).add("va_msg","尊敬的年卡用户，欢迎下次使用！");
 		}
-		if(depotcard.getType()==4){
-			time=day/(1000*60*60*24*365);
-		}
-		if(time<1)
-		{
-			return Msg.fail().add("type", 1);
-		}else{
-			double balance=depotcard.getMoney();
-			int money=0;
-			List<CouponData> coupons=couponService.findAllCouponByCardNum(cardnum, "");
-			if(coupons!=null&&coupons.size()>0)
-			{
-				money=coupons.get(0).getMoney();
-			}
-			parkin=parkInfo.getParkin();
-			day=date.getTime()-parkin.getTime();
-			System.out.println("day："+day);
-			time=day/(1000*60*60);
-			System.out.println("time："+time);
-			if(day%(1000*60*60)>0){
-			time+=1;
-			}
-			if(balance+money-illegalmoney<time*Constants.HOURMONEY)
-			{
-			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney-money-balance)+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
-			}else{
-			return Msg.fail().add("type", 0);
-			}
-		}
+//		Date deductedtime=depotcard.getDeductedtime();
+//		if(depotcard.getType()>1)//是月卡和年卡
+//		{
+//		day=date.getTime()-deductedtime.getTime();
+//		}
+//		if(depotcard.getType()==3){
+//			time=day/(1000*60*60*24*30);
+//		}
+//		if(time<1)
+//		{
+//			return Msg.fail().add("type", 1);
+//		}else{
+//			double balance=depotcard.getMoney();
+//			int money=0;
+//			List<CouponData> coupons=couponService.findAllCouponByCardNum(cardnum, "");
+//			if(coupons!=null&&coupons.size()>0)
+//			{
+//				money=coupons.get(0).getMoney();
+//			}
+//			parkin=parkInfo.getParkin();
+//			day=date.getTime()-parkin.getTime();
+//			System.out.println("day："+day);
+//			time=day/(1000*60*60);
+//			System.out.println("time："+time);
+//			if(day%(1000*60*60)>0){
+//			time+=1;
+//			}
+//			if(balance+money-illegalmoney<time*Constants.HOURMONEY)
+//			{
+//			return Msg.success().add("money_pay", time*Constants.HOURMONEY+illegalmoney-money-balance).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney-money-balance)+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
+//			}else{
+//			return Msg.fail().add("type", 0);
+//			}
+//		}
 	}
 
 }
