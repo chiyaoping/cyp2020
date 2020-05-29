@@ -71,7 +71,7 @@ public class CheckController {
 	static int i=0;
 
 	/**
-	 * 手动入库
+	 * 车辆手动入库
 	 * @param model
 	 * @param data
 	 * @return
@@ -195,81 +195,6 @@ public class CheckController {
 		}
 		return Msg.success();
 	}
-
-	/**
-	 * 通过停车位号查找停车位信息
-	 * @param parknum
-	 * @return
-	 */
-	@RequestMapping("/index/check/findParkinfoByParknum")
-	@ResponseBody
-	public Msg findParkinfoByParknum(@RequestParam("parkNum") int parknum) {
-		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);
-		return Msg.success().add("parkInfo", parkInfo);
-	}
-
-	/**
-	 * 通过车牌号查找停车信息
-	 * @param carnum
-	 * @return
-	 */
-	@RequestMapping("/index/check/findParkinfoByCarnum")
-	@ResponseBody
-	public Msg findParkinfoByCarnum(@RequestParam("carnum") String carnum) {
-		ParkInfo parkInfo = parkinfoservice.findParkinfoByCarnum(carnum);
-		if(parkInfo!=null)
-		{
-			return Msg.success().add("parkInfo", parkInfo);
-		}
-		return Msg.fail();
-	}
-	/**
-	 * 通过停车卡查找停车信息
-	 * @param cardnum
-	 * @return
-	 */
-	@RequestMapping("/index/check/findParkinfoByCardnum")
-	@ResponseBody
-	public Msg findParkinfoByCardnum(@RequestParam("cardnum") String cardnum) {
-		ParkInfo parkInfo = parkinfoservice.findParkinfoByCardnum(cardnum);
-		//System.out.println("ello"+parkInfo.getId());
-		if(parkInfo!=null)
-		{ 
-			return Msg.success().add("parkInfo", parkInfo);
-		}
-		return Msg.fail();
-	}
-
-	/**
-	 * 通过停车位查找停车信息
-	 * @param parknum
-	 * @return
-	 */
-	@RequestMapping("/index/check/findParkinfoDetailByParknum")
-	@ResponseBody
-	public Msg findParkinfoDetailByParknum(@RequestParam("parkNum") int parknum)
-	{
-		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);
-		if(parkInfo==null)
-		{
-			return Msg.fail();
-		}
-		Date date=parkInfo.getParkin();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String parkin=formatter.format(date);
-		System.out.println(parkInfo.toString());
-		String cardnum=parkInfo.getCardnum();
-		Depotcard depotcard=depotcardService.findByCardnum(cardnum);
-		int cardid=0;
-		User user =null;
-		if(depotcard!=null)
-		{
-		cardid=depotcard.getId();
-		user =userService.findUserByCardid(cardid);
-		}
-		return Msg.success().add("parkInfo", parkInfo).add("user", user).add("parkin", parkin);
-	}
-
 	/**
 	 * 违规信息提交
 	 * @param data
@@ -295,10 +220,10 @@ public class CheckController {
 		info.setParkin(parkInfo.getParkin());
 		info.setDelete("N");
 		try {
-			
-		illegalInfoService.save(info);
-		
-			}
+
+			illegalInfoService.save(info);
+
+		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return Msg.fail().add("va_msg", "添加违规失败");
@@ -407,7 +332,7 @@ public class CheckController {
 			time=day/(1000*60*60);
 			System.out.println("time："+time);
 			if(day%(1000*60*60)>0){
-			time+=1;
+				time+=1;
 			}
 
 			return Msg.success().add("money_pay", time*Constants.TEMPMONEY+illegalmoney).add("va_msg", "欢迎下次使用！"+"\n本次停车费用为"+(time*Constants.TEMPMONEY+illegalmoney)+"元"+(illegalmoney>0? "\n停车产生的违规行为是："+illegalInfo.getIllegalInfo():""));
@@ -428,13 +353,13 @@ public class CheckController {
 			day=date.getTime()-parkin.getTime();
 			time=day/(1000*60*60);
 			if(day%(1000*60*60)>0){
-			time+=1;
+				time+=1;
 			}
 			if(balance+couponmoney-illegalmoney>=time*Constants.HOURMONEY)
 			{
-			return Msg.success().add("type",1).add("money_pay", time*Constants.HOURMONEY).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney)+"元"+(couponmoney>time*Constants.HOURMONEY?"\n本次停车由优惠券全额抵扣，无需付费，欢迎下次使用!":"")+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():"")+(couponmoney>0?("\n当前停车卡余额还剩"+(balance)+"元"):("\n当前停车卡余额还剩"+(balance-time*Constants.HOURMONEY-illegalmoney)+"元")));
+				return Msg.success().add("type",1).add("money_pay", time*Constants.HOURMONEY).add("va_msg", "出库成功,本次停车费用为"+(time*Constants.HOURMONEY+illegalmoney)+"元"+(couponmoney>time*Constants.HOURMONEY?"\n本次停车由优惠券全额抵扣，无需付费，欢迎下次使用!":"")+(illegalmoney>0? ",其中停车产生的违规行为是："+illegalInfo.getIllegalInfo():"")+(couponmoney>0?("\n当前停车卡余额还剩"+(balance)+"元"):("\n当前停车卡余额还剩"+(balance-time*Constants.HOURMONEY-illegalmoney)+"元")));
 			}else{
-			return Msg.fail().add("money_pay", time*Constants.HOURMONEY+illegalmoney-couponmoney).add("va_msg","停车卡费用不足，请支付现金或扫码支付。");
+				return Msg.fail().add("money_pay", time*Constants.HOURMONEY+illegalmoney-couponmoney).add("va_msg","停车卡费用不足，请支付现金或扫码支付。");
 			}
 		}
 		else if(depotcard.getType()==2){
@@ -445,5 +370,81 @@ public class CheckController {
 		}
 
 	}
+
+
+	/**
+	 * 通过停车位号查找停车位信息
+	 * @param parknum
+	 * @return
+	 */
+	@RequestMapping("/index/check/findParkinfoByParknum")
+	@ResponseBody
+	public Msg findParkinfoByParknum(@RequestParam("parkNum") int parknum) {
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);
+		return Msg.success().add("parkInfo", parkInfo);
+	}
+
+	/**
+	 * 通过车牌号查找停车信息
+	 * @param carnum
+	 * @return
+	 */
+	@RequestMapping("/index/check/findParkinfoByCarnum")
+	@ResponseBody
+	public Msg findParkinfoByCarnum(@RequestParam("carnum") String carnum) {
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByCarnum(carnum);
+		if(parkInfo!=null)
+		{
+			return Msg.success().add("parkInfo", parkInfo);
+		}
+		return Msg.fail();
+	}
+	/**
+	 * 通过停车卡查找停车信息
+	 * @param cardnum
+	 * @return
+	 */
+	@RequestMapping("/index/check/findParkinfoByCardnum")
+	@ResponseBody
+	public Msg findParkinfoByCardnum(@RequestParam("cardnum") String cardnum) {
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByCardnum(cardnum);
+		//System.out.println("ello"+parkInfo.getId());
+		if(parkInfo!=null)
+		{ 
+			return Msg.success().add("parkInfo", parkInfo);
+		}
+		return Msg.fail();
+	}
+
+	/**
+	 * 通过停车位查找停车信息
+	 * @param parknum
+	 * @return
+	 */
+	@RequestMapping("/index/check/findParkinfoDetailByParknum")
+	@ResponseBody
+	public Msg findParkinfoDetailByParknum(@RequestParam("parkNum") int parknum)
+	{
+		ParkInfo parkInfo = parkinfoservice.findParkinfoByParknum(parknum);
+		if(parkInfo==null)
+		{
+			return Msg.fail();
+		}
+		Date date=parkInfo.getParkin();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String parkin=formatter.format(date);
+		System.out.println(parkInfo.toString());
+		String cardnum=parkInfo.getCardnum();
+		Depotcard depotcard=depotcardService.findByCardnum(cardnum);
+		int cardid=0;
+		User user =null;
+		if(depotcard!=null)
+		{
+		cardid=depotcard.getId();
+		user =userService.findUserByCardid(cardid);
+		}
+		return Msg.success().add("parkInfo", parkInfo).add("user", user).add("parkin", parkin);
+	}
+
 
 }

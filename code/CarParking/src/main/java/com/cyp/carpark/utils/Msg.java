@@ -6,26 +6,25 @@ import java.util.Map;
 
 public class Msg {
 	
-	//״̬��
+
 	private int code;
-	//��ʾ��Ϣ
+
 	private String msg;
-	
-	//�û�Ҫ���ظ��������
+
 	private Map<String, Object> extend=new HashMap<String, Object>();
 	
 	public static Msg success()
 	{
 		Msg result=new Msg();
 		result.setCode(100);
-		result.setMsg("����ɹ�");
+		result.setMsg("success");
 		return result;
 	}
 	public static Msg fail()
 	{
 		Msg result=new Msg();
 		result.setCode(200);
-		result.setMsg("����ʧ��");
+		result.setMsg("fail");
 		return result;
 	}
 	public Msg add(String key, Object value)

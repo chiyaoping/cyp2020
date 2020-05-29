@@ -64,6 +64,104 @@ public class ImageRPController {
 
 		return "upload";
 	}
+
+	/**
+	 * 车辆自动入库
+	 * @param file
+	 * @param id
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/fileUpload1")
+	public String upload(@RequestParam("file") MultipartFile file,@RequestParam("id")int id,HttpServletResponse response,HttpServletRequest request) {
+		int parkId=id;
+		ParkInfo parkInfo=new ParkInfo();
+		FormData formData=new FormData();
+		System.out.println(file);
+
+		String fileName = file.getOriginalFilename();
+		@SuppressWarnings("unused")
+		String suffixName = fileName.substring(fileName.lastIndexOf("."));
+		String filePath = "C:\\springUpload\\image\\";
+		// fileName = UUID.randomUUID() + suffixName;
+		File dest = new File(filePath + fileName);
+		System.out.println("file-path:"+dest.toString());
+		if (!dest.getParentFile().exists()) {
+			dest.getParentFile().mkdirs();
+		}
+		try {
+			file.transferTo(dest);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String token = "24.2fdf50fc57f6f37ebab5974f8193bf22.2592000.1592396491.282335-19309228";
+		String Filepath = dest.toString();
+		String image = Base64ImageUtils.GetImageStrFromPath(Filepath);
+		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate?access_token="+token;
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		Map<String, String> bodys = new HashMap<String, String>();
+		bodys.put("image", image);
+		try {
+			CloseableHttpResponse response2 =  HttpClientUtils.doHttpsPost(url,headers,bodys);
+			String Sreq = HttpClientUtils.toString(response2);
+			System.out.println(HttpClientUtils.toString(response2));
+			System.out.println("jsonObject:".substring(0,5));
+			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(9,16);
+			parkspaceService.changeStatus(parkId, 1,realCarnum);
+			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
+				formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
+				formData.setCarNum(realCarnum);
+				formData.setParkNum(parkId);
+				formData.setParkTem(0);
+			}else {
+				formData.setCardNum("");
+				formData.setCarNum(realCarnum);
+				formData.setParkNum(parkId);
+				formData.setParkTem(1);
+			}
+			parkinfoservice.saveParkinfo(formData);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/index/toindex";
+
+	}
+
+	/**
+	 * 提供车牌号入库（接口）
+	 * @param realCarnum
+	 * @param parkid
+	 * @param response
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/index/comeinBycarnum")
+	public String comeinBycarnum(@RequestParam("carnum") String realCarnum,@RequestParam("parkid")int parkid,HttpServletResponse response,HttpServletRequest request) {
+		FormData formData=new FormData();
+		try {
+			parkspaceService.changeStatus(parkid, 1,realCarnum);//标记停车位为已停车状态
+			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
+				formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
+				formData.setCarNum(realCarnum);
+				formData.setParkNum(parkid);
+				formData.setParkTem(0);
+			}else {
+				formData.setCardNum("");
+				formData.setCarNum(realCarnum);
+				formData.setParkNum(parkid);
+				formData.setParkTem(1);
+			}
+			parkinfoservice.saveParkinfo(formData);//将停车信息保存到历史停车
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/index/toindex";
+	}
+
+
 	@ResponseBody
 	@RequestMapping(value = "/fileUpload2")
 	public String upload2(@RequestParam("file") MultipartFile file,@RequestParam("id")int id,HttpServletResponse response,HttpServletRequest request) {
@@ -97,129 +195,8 @@ public class ImageRPController {
 		attr.addFlashAttribute("","");
 		return "redirect:/index/toindex";
 	}
-	@RequestMapping(value = "/comeinBycarnum")
-	public String comeinBycarnum(@RequestParam("carnum") String realCarnum,@RequestParam("parkid")int parkid,HttpServletResponse response,HttpServletRequest request) {
-		FormData formData=new FormData();
-		try {
-			parkspaceService.changeStatus(parkid, 1,realCarnum);//标记停车位为已停车状态
-			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
-				formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
-				formData.setCarNum(realCarnum);
-				formData.setParkNum(parkid);
-				formData.setParkTem(0);
-			}else {
-				formData.setCardNum("");
-				formData.setCarNum(realCarnum);
-				formData.setParkNum(parkid);
-				formData.setParkTem(1);
-			}
-			parkinfoservice.saveParkinfo(formData);//将停车信息保存到历史停车
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "redirect:/index/toindex";
-	}
-	@RequestMapping(value = "/fileUpload1")
-	public String upload(@RequestParam("file") MultipartFile file,@RequestParam("id")int id,HttpServletResponse response,HttpServletRequest request) {
-		int parkId=id;
-		ParkInfo parkInfo=new ParkInfo();
-		FormData formData=new FormData();
-		System.out.println(file);
-	
-		String fileName = file.getOriginalFilename();
-		@SuppressWarnings("unused")
-		String suffixName = fileName.substring(fileName.lastIndexOf("."));
-		String filePath = "C:\\springUpload\\image\\";
-		// fileName = UUID.randomUUID() + suffixName;
-		File dest = new File(filePath + fileName);
-		System.out.println("file-path:"+dest.toString());
-		if (!dest.getParentFile().exists()) {
-			dest.getParentFile().mkdirs();
-		}
-		try {
-			file.transferTo(dest);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String token = "24.2fdf50fc57f6f37ebab5974f8193bf22.2592000.1592396491.282335-19309228";
-		String Filepath = dest.toString();
-		String image = Base64ImageUtils.GetImageStrFromPath(Filepath);
-		String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/license_plate?access_token="+token;
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-Type", "application/x-www-form-urlencoded");
-		Map<String, String> bodys = new HashMap<String, String>();
-		bodys.put("image", image);
-		try {
-			CloseableHttpResponse response2 =  HttpClientUtils.doHttpsPost(url,headers,bodys);
-			String Sreq = HttpClientUtils.toString(response2);
-			System.out.println(HttpClientUtils.toString(response2));
-			System.out.println("jsonObject:".substring(0,5));
-			String realCarnum = Sreq.substring(Sreq.indexOf("number"),Sreq.indexOf("probability")).substring(9,16);
-			parkspaceService.changeStatus(parkId, 1,realCarnum);
-			if (depotcardService.findCardnumByCarnum(realCarnum)!=null) {
-					formData.setCardNum(depotcardService.findCardnumByCarnum(realCarnum));
-					formData.setCarNum(realCarnum);
-					formData.setParkNum(parkId);
-					formData.setParkTem(0);
-				}else {
-					formData.setCardNum("");
-					formData.setCarNum(realCarnum);
-					formData.setParkNum(parkId);
-					formData.setParkTem(1);
-				}
-			parkinfoservice.saveParkinfo(formData);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "redirect:/index/toindex";
-	
-//			try {
-//				file.transferTo(dest);
-//				PlateRecognise plateRecognise = new PlateRecogniseImpl();
-//				String img = filePath + fileName;
-//				logger.info(img);
-//				List<String> res = plateRecognise.plateRecognise(filePath + fileName);
-//				if (res.size() < 1 || res.contains("")) {
-//					logger.info("出错了");
-//
-//					//return Msg.fail().add("va_msg", "�������");
-//					response.setHeader("refresh", "6;url="+request.getContextPath()+"/index/toindex");
-//					return "error";
-//					//response.setHeader("refresh", "5;url=/index/toindex");
-//					//return "redirect:/index/toindex";
-//				}
-//				String carNum=res.get(0);
-//				Result result = new Result(201, plateRecognise.plateRecognise(filePath + fileName),
-//						new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-//				logger.info(result.toString());
-//				if (depotcardService.findCardnumByCarnum(carNum)!=null) {
-//					formData.setCardNum(depotcardService.findCardnumByCarnum(carNum));
-//					formData.setCarNum(carNum);
-//					formData.setParkNum(parkId);
-//					formData.setParkTem(0);
-//				}else {
-//					formData.setCardNum("");
-//					formData.setCarNum(carNum);
-//					formData.setParkNum(parkId);
-//					formData.setParkTem(1);
-//				}
-//
-//				parkinfoservice.saveParkinfo(formData);
-//				parkspaceService.changeStatus(parkId, 1);
-//				//return "index";
-//				return "redirect:/index/toindex";
-//				//return Msg.success();
-//			} catch (IllegalStateException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
 
-	}
 	
 	
 	@RequestMapping(value = "/fileUpload3")

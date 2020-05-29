@@ -51,7 +51,7 @@ public class LoginController {
         System.out.println(user);
 		if(user==null)
 		{
-			return Msg.fail().add("va_msg", "用户名为空");
+			return Msg.fail().add("va_msg", "用户名不存在");
 		}
 		return Msg.success();
 	}

@@ -494,7 +494,7 @@ public class IndexController {
 			emailData.setSendUsername(sendUser.getUsername());
 			emailDatas.add(emailData);
 		}
-		System.out.println(":4");
+//		System.out.println(":4");
 		count=emailService.findAllEmailCountByUser(user1.getId(),user1.getRole());
 		countPage=count/10;
 		if(count%10!=0)
@@ -504,7 +504,6 @@ public class IndexController {
 		pageUtil.setCurrent(page);
 		pageUtil.setCount(count);
 		pageUtil.setCountPage(countPage);
-		System.out.println(":5");
 		pageUtil.setPages(emailDatas);
 		System.out.println(pageUtil.getPages());
 		model.addAttribute("emails", pageUtil);
