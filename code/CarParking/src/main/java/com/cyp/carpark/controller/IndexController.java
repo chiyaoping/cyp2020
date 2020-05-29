@@ -68,7 +68,7 @@ public class IndexController {
 	private EmailService emailService;
 	@Autowired
 	private DepotInfoService depotInfoService;
-	
+
 	@RequestMapping("/index/toindex")
 	public String toIndex(Model model,HttpSession session,@RequestParam(value="tag",required=false) Integer tag,@RequestParam(value="page",required=false) Integer page)
 	{
@@ -482,7 +482,7 @@ public class IndexController {
 			if(emailData.getToid()!=0)
 			{
 			User toUser=userService.findUserById(emailData.getToid());
-			emailData.setToUsername(toUser.getUsername());
+//			emailData.setToUsername(toUser.getUsername());
 			}else
 			{
 				emailData.setToUsername("");
