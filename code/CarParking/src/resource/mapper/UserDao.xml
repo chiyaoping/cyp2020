@@ -19,7 +19,7 @@
 		SELECT * FROM user where username=#{username}
 	</select>
 	<select id="findAllUser" resultType="com.cyp.carpark.entity.User" >
-		SELECT u.*,c.cardnum FROM user u left join card c on c.id=u.cardid limit #{page},#{size}
+		SELECT u.*,c.cardnum FROM user u left join card c on c.id=u.cardid order by id desc limit #{page},#{size}
 	</select>
 	<select id="findUsersByRole" resultType="com.cyp.carpark.entity.User" >
 		SELECT u.*,c.cardnum FROM user u left join card c on c.id=u.cardid where 1=1

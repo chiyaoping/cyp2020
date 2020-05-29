@@ -38,7 +38,7 @@
 						<td id="alert_cardnum${status.count}">${item.cardnum }</td>
 						<td>${item.type }</td>
 						<td>${item.money }</td>
-						<td>${item.username }</td> 	
+						<td>${item.username }</td>
 						<td>${item.time }</td>
 						<td>${item.islose==0?"否":"是" }</td>
 						<td><input class="btn btn-default" type="button" onclick="alertCard(${status.count})" value="修改"><c:if test="${sessionScope.user.role!=3 }"><input class="btn btn-default" type="button" onclick="deleteCard(${status.count})" value="删除"></c:if></td>

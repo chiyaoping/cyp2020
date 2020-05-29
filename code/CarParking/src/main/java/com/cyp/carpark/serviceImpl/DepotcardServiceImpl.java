@@ -29,7 +29,7 @@ public class DepotcardServiceImpl implements DepotcardService {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String trans=formatter.format(date);
 		String dateStr=trans.replaceAll(" ", "").replaceAll("-", "");
-		String cardnum=depotcardManagerData.getUsername()+dateStr;
+		String cardnum=depotcardManagerData.getUsername();
 		Depotcard depotcardTem=depotcardDao.findByCardnum(cardnum);
 		if(depotcardTem!=null)
 		{

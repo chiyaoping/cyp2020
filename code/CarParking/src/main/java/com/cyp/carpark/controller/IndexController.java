@@ -302,6 +302,7 @@ public class IndexController {
 		{
 			cardnum="";
 		}
+		//是管理员就查询全部信息，是客户就只查自己的信息
 		if (user1 != null) {
 			if (user1.getRole() == 1) {
 				depotcardManagerDatas = depotcardService.findAllDepotcard(cardnum,page.intValue()*10,Constants.PAGESIZE);

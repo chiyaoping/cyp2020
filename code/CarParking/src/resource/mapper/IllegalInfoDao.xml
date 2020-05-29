@@ -6,7 +6,7 @@
 	INSERT INTO illegalinfo(cardnum,illegalInfo,time,uid,carnum,parkin,deleted) values(#{cardnum},#{illegalInfo},#{time},#{uid},#{carnum},#{parkin},#{delete})
 </insert>
 <select id="findAllIllegalInfo" resultType="com.cyp.carpark.entity.IllegalInfo">
-	select i.*,u.username from illegalinfo i,user u where i.uid=u.id and (i.cardnum like '%${name}%' || i.carnum like '%${name}%') order by id desc limit #{page},#{size}
+	select i.*,u.username from illegalinfo i,user u where i.uid=u.role and (i.cardnum like '%${name}%' || i.carnum like '%${name}%') order by id desc limit #{page},#{size}
 </select>
 <select id="findById" resultType="com.cyp.carpark.entity.IllegalInfo">
 	select * from illegalinfo i where i.id=#{id}
